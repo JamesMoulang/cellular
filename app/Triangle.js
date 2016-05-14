@@ -1,7 +1,9 @@
 import Vector from './Vector';
+import Destroyable from './Destroyable';
 
-class Triangle {
+class Triangle extends Destroyable {
 	constructor(game, x, y, base, length, angle, colour) {
+		super();
 		this.game = game;
 		this.position = new Vector(x, y);
 		this.base = base;
@@ -21,7 +23,7 @@ class Triangle {
 	}
 
 	update() {
-
+		
 	}
 
 	setRotation(rad) {

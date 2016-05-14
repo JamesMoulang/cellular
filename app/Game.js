@@ -34,21 +34,32 @@ class Game {
 			horizontal: 0,
 			pointer: {
 				world: new Vector(),
-				screen: new Vector()
+				screen: new Vector(),
+				down: false
 			}
 		};
 		window.onresize = this.resizeCanvas.bind(this);
 		window.onkeydown = this.onkeydown.bind(this);
 		window.onkeyup = this.onkeyup.bind(this);
 		window.onmousemove = this.onmousemove.bind(this);
+		window.onmousedown = this.onmousedown.bind(this);
+		window.onmouseup = this.onmouseup.bind(this);
 		this.resizeCanvas();
-		this.world.add(new Circle(this, 10, 10, 100, '#ff0000'));
+		this.world.add(new Circle(this, new Vector(10, 10), 100, '#ff0000'));
 		this.world.add(new Player(this, 0, 0));
 	}
 
 	resizeCanvas () {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
+	}
+
+	onmouseup() {
+		this.input.pointer.down = false;
+	}
+
+	onmousedown() {
+		this.input.pointer.down = true;
 	}
 
 	onmousemove(e) {
@@ -60,8 +71,6 @@ class Game {
 
 		this.input.pointer.world.x = x - this.canvas.width * 0.5 + this.camera.x;
 		this.input.pointer.world.y = y - this.canvas.height * 0.5 + this.camera.y;
-
-		console.log(this.input.pointer.world);
 	}
 
 	onkeyup(e) {

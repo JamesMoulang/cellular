@@ -1,4 +1,5 @@
 import Triangle from '../Triangle';
+import MuzzleFlash from './MuzzleFlash';
 
 class Player extends Triangle {
 	constructor(game, x, y) {
@@ -12,6 +13,11 @@ class Player extends Triangle {
 
 		this.rotation = -this.position.angleTo(this.game.input.pointer.world) - Math.PI * 0.5;
 		this.setRotation(this.rotation);
+
+		if (this.game.input.pointer.down && !this.asdjklhasf) {
+			this.asdjklhasf = true;
+			this.game.world.add(new MuzzleFlash(this, this.position.add(this.rotatedVertices[2])));
+		}
 
 		this.game.camera.x = this.position.x;
 		this.game.camera.y = this.position.y;
