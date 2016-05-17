@@ -8,7 +8,7 @@ class Group {
 
 	add(entity) {
 		entity.group = this;
-		this.entities.unshift(entity);
+		this.entities.push(entity);
 	}
 
 	update() {
@@ -20,7 +20,7 @@ class Group {
 	}
 
 	render() {
-		for (var i = this.entities.length - 1; i >= 0; i--) {
+		for (var i = 0; i < this.entities.length; i++) {
 			this.entities[i].render();
 		}
 	}

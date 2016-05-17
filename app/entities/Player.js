@@ -3,8 +3,9 @@ import MuzzleFlash from './MuzzleFlash';
 
 class Player extends Triangle {
 	constructor(game, x, y) {
-		super(game, x, y, 40, 40*1.1, 0, '#ffa500');
+		super(game, x, y, 40, 40*2.5, 0, '#ffa500');
 		this.rotation = 0;
+		this.counter = 0;
 	}
 
 	update() {
@@ -14,8 +15,8 @@ class Player extends Triangle {
 		this.rotation = -this.position.angleTo(this.game.input.pointer.world) - Math.PI * 0.5;
 		this.setRotation(this.rotation);
 
-		if (this.game.input.pointer.down && !this.asdjklhasf) {
-			this.asdjklhasf = true;
+		if (this.game.input.pointer.down) {
+			this.counter++;
 			this.game.world.add(new MuzzleFlash(this, this.position.add(this.rotatedVertices[2])));
 		}
 

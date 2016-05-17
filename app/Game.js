@@ -16,7 +16,7 @@ class Game {
 	constructor(canvas, ctx, fps = 30) {
 		this.canvas = canvas;
 		this.ctx = ctx;
-		this.backgroundColour = '#eee9e9';
+		this.backgroundColour = '#000000';
 		this.updatables = [];
 		this.camera = new Camera(this);
 		this.paused = true;
@@ -134,6 +134,9 @@ class Game {
 	loop() {
 		var lastFrameTimeElapsed = this.timestamp() - this.lastTimestamp;
 		this.delta = lastFrameTimeElapsed / this.idealFrameTime;
+		if (this.delta == 0) {
+			console.log(lastFrameTimeElapsed);
+		}
 		this.update();
 		this.render();
 
