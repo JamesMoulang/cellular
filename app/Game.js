@@ -9,14 +9,18 @@ const codes = {
 	w: 87,
 	a: 65,
 	s: 83,
-	d: 68
+	d: 68,
+	up: 38,
+	left: 37,
+	down: 40,
+	right: 39
 };
 
 class Game {
 	constructor(canvas, ctx, fps = 30) {
 		this.canvas = canvas;
 		this.ctx = ctx;
-		this.backgroundColour = '#000000';
+		this.backgroundColour = '#a1a1a1';
 		this.updatables = [];
 		this.camera = new Camera(this);
 		this.paused = true;
@@ -25,6 +29,8 @@ class Game {
 		this.fps = fps;
 		this.idealFrameTime = 1000 / this.fps;
 		this.delta = 0;
+		this.gravity = -0.098;
+		this.windDirection = new Vector(0.5, 0.5).normalised();
 		this.input = {
 			up: false,
 			down: false,
@@ -35,7 +41,9 @@ class Game {
 			pointer: {
 				world: new Vector(),
 				screen: new Vector(),
-				down: false
+				down: false,
+				movedThisFrame: false,
+				clicked: false
 			}
 		};
 		window.onresize = this.resizeCanvas.bind(this);
@@ -46,7 +54,7 @@ class Game {
 		window.onmouseup = this.onmouseup.bind(this);
 		this.resizeCanvas();
 		this.world.add(new Circle(this, new Vector(10, 10), 100, '#ff0000'));
-		this.world.add(new Player(this, 0, 0));
+		this.world.add(new Player(this));
 	}
 
 	resizeCanvas () {
@@ -59,6 +67,7 @@ class Game {
 	}
 
 	onmousedown() {
+		this.input.pointer.clicked = true;
 		this.input.pointer.down = true;
 	}
 
@@ -69,24 +78,30 @@ class Game {
 		this.input.pointer.screen.x = x;
 		this.input.pointer.screen.y = y;
 
-		this.input.pointer.world.x = x - this.canvas.width * 0.5 + this.camera.x;
-		this.input.pointer.world.y = y - this.canvas.height * 0.5 + this.camera.y;
+		this.input.pointer.world.x = x - this.canvas.width * 0.5 + this.camera.position.x;
+		this.input.pointer.world.y = y - this.canvas.height * 0.5 + this.camera.position.y;
+
+		this.input.pointer.movedThisFrame = true;
 	}
 
 	onkeyup(e) {
 		switch(e.keyCode) {
+			case codes.up:
 			case codes.w:
 				this.input.up = false;
 				this.input.vertical++;
 				break;
+			case codes.left:
 			case codes.a:
 				this.input.left = false;
 				this.input.horizontal++;
 				break;
+			case codes.down:
 			case codes.s:
 				this.input.down = false;
 				this.input.vertical--;
 				break;
+			case codes.right:
 			case codes.d:
 				this.input.right = false;
 				this.input.horizontal--;
@@ -101,18 +116,22 @@ class Game {
 
 	onkeydown(e) {
 		switch(e.keyCode) {
+			case codes.up:
 			case codes.w:
 				this.input.up = true;
 				this.input.vertical--;
 				break;
+			case codes.left:
 			case codes.a:
 				this.input.left = true;
 				this.input.horizontal--;
 				break;
+			case codes.down:
 			case codes.s:
 				this.input.down = true;
 				this.input.vertical++;
 				break;
+			case codes.right:
 			case codes.d:
 				this.input.right = true;
 				this.input.horizontal++;
@@ -134,9 +153,6 @@ class Game {
 	loop() {
 		var lastFrameTimeElapsed = this.timestamp() - this.lastTimestamp;
 		this.delta = lastFrameTimeElapsed / this.idealFrameTime;
-		if (this.delta == 0) {
-			console.log(lastFrameTimeElapsed);
-		}
 		this.update();
 		this.render();
 
@@ -150,6 +166,8 @@ class Game {
 
 	update() {
 		this.world.update();
+		this.input.pointer.movedThisFrame = false;
+		this.input.pointer.clicked = false;
 	}
 
 	timestamp() {

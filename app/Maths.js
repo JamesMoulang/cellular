@@ -8,6 +8,29 @@ class Maths {
 			return value;
 		}
 	}
+
+	static towardsValue(value, amount, target) {
+		if (value > target) {
+			if (value - amount < target) {
+				return target;
+			} else {
+				return value - amount;
+			}
+		} else if (value < target) {
+			if (value + amount > target) {
+				return target;
+			} else {
+				return value + amount;
+			}
+		} else {
+			return value;
+		}
+	}
+
+	static lerp(value, amount, target) {
+		var total = target - value;
+		return value + total * amount;
+	}
 }
 
 export default Maths;

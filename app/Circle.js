@@ -18,8 +18,8 @@ class Circle extends Destroyable {
 	render() {
 		if (this.alive) {
 			var midPoint = this.game.camera.getMidPoint();
-			var x = midPoint.x + (this.position.x - this.game.camera.x);
-			var y = midPoint.y + (this.position.y - this.game.camera.y);
+			var x = midPoint.x + (this.position.x - this.game.camera.position.x);
+			var y = midPoint.y + (this.position.y - this.game.camera.position.y);
 			var radius = this.radius * this.game.camera.scale;
 
 			var ctx = this.game.ctx;

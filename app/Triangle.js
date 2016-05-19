@@ -44,8 +44,8 @@ class Triangle extends Destroyable {
 
 	render() {
 		var midPoint = this.game.camera.getMidPoint();
-		var x = midPoint.x + (this.position.x - this.game.camera.x);
-		var y = midPoint.y + (this.position.y - this.game.camera.y);
+		var x = midPoint.x + (this.position.x - this.game.camera.position.x);
+		var y = midPoint.y + (this.position.y - this.game.camera.position.y);
 
 		var ctx = this.game.ctx;
 		ctx.fillStyle = this.colour;
