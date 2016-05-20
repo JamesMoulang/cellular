@@ -14,6 +14,11 @@ class Camera {
 		);
 	}
 
+	lerp(target, amount) {
+		var nextPosition = this.position.lerp(target, amount);
+		this.move(nextPosition.minus(this.position));
+	}
+
 	move(v) {
 		this.position = this.position.add(v);
 		if (!this.game.input.pointer.movedThisFrame) {

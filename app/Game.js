@@ -183,6 +183,9 @@ class Game {
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 		this.world.render();
+
+		ctx.fillStyle='#000000';
+		ctx.fillRect(canvas.width * 0.5 - 4, canvas.height * 0.5 - 4, 8, 8);
 	}
 }
 
