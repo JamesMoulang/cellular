@@ -2,6 +2,7 @@ var _ = require('underscore');
 
 class Group {
 	constructor(game) {
+		this.tag = null;
 		this.game = game;
 		this.entities = [];
 	}
@@ -9,6 +10,20 @@ class Group {
 	add(entity) {
 		entity.group = this;
 		this.entities.push(entity);
+	}
+
+	getEntitiesWithTagName(tag) {
+		var entities = [];
+		for (var i = 0; i < this.entities.length; i++) {
+			if (this.entities[i].tag == tag) {
+				entities.push(this.entities[i]);
+			} else {
+				if (this.entities[i].tag == null) {
+					entities.push(this.entities[i].getEntitiesWithTagName(tag));
+				}
+			}
+		}
+		return entities;
 	}
 
 	update() {

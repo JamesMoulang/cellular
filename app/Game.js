@@ -4,6 +4,8 @@ import Circle from './Circle';
 import Player from './entities/Player';
 import Maths from './Maths';
 import Vector from './Vector';
+import StateManager from './StateManager';
+import Main from './states/Main';
 
 const codes = {
 	w: 87,
@@ -17,9 +19,11 @@ const codes = {
 };
 
 class Game {
-	constructor(canvas, ctx, fps = 30) {
+	constructor(width, height, canvas, ctx, fps = 30) {
 		this.canvas = canvas;
 		this.ctx = ctx;
+		this.width = width;
+		this.height = height;
 		this.backgroundColour = '#a1a1a1';
 		this.updatables = [];
 		this.camera = new Camera(this);
@@ -27,10 +31,12 @@ class Game {
 		this.world = new Group(this);
 		this.lastTimestamp = 0;
 		this.fps = fps;
-		this.idealFrameTime = 1000 / this.fps;
+		this.timeScaleFPS = 30;
+		this.idealFrameTime = 1000 / this.timeScaleFPS;
 		this.delta = 0;
 		this.gravity = -0.098;
 		this.windDirection = new Vector(0.5, 0.5).normalised();
+		this.state = new StateManager();
 		this.input = {
 			up: false,
 			down: false,
@@ -53,13 +59,16 @@ class Game {
 		window.onmousedown = this.onmousedown.bind(this);
 		window.onmouseup = this.onmouseup.bind(this);
 		this.resizeCanvas();
-		this.world.add(new Circle(this, new Vector(10, 10), 100, '#ff0000'));
-		this.world.add(new Player(this));
+
+		var main = new Main(this);
+		this.state.add(main);
+		this.state.switchState('main');
 	}
 
 	resizeCanvas () {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
+		this.camera.onCanvasResize();
 	}
 
 	onmouseup() {
@@ -164,7 +173,14 @@ class Game {
 		}
 	}
 
+	getEntitiesWithTagName(tag) {
+		var entities = [];
+		entities.push(this.world.getEntitiesWithTagName(tag));
+		return entities;
+	}
+
 	update() {
+		this.state.update();
 		this.world.update();
 		this.input.pointer.movedThisFrame = false;
 		this.input.pointer.clicked = false;
@@ -184,8 +200,17 @@ class Game {
 
 		this.world.render();
 
-		ctx.fillStyle='#000000';
-		ctx.fillRect(canvas.width * 0.5 - 4, canvas.height * 0.5 - 4, 8, 8);
+		if (this.camera.debug) {
+			ctx.globalAlpha = 0.5;
+			ctx.strokeStyle='#ffffff';
+			ctx.strokeRect(
+				this.camera.getMidPoint().x - this.camera.deadZone.width * 0.5 * this.camera.scale,
+				this.camera.getMidPoint().y - this.camera.deadZone.height * 0.5 * this.camera.scale,
+				this.camera.deadZone.width * this.camera.scale,
+				this.camera.deadZone.height * this.camera.scale
+			);
+			ctx.globalAlpha = 1;
+		}
 	}
 }
 

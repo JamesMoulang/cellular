@@ -1,6 +1,7 @@
 class Destroyable {
 	constructor() {
 		this.alive = true;
+		this.tag = 'default';
 	}
 
 	destroy() {

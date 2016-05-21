@@ -1,10 +1,28 @@
 import Vector from './Vector';
+import Maths from './Maths';
 
 class Camera {
 	constructor(game, x = 0, y = 0, scale = 1) {
 		this.position = new Vector(x, y);
 		this.game = game;
 		this.scale = scale;
+		this.deadZoneRatio = 0.25;
+		this.debug = true;
+		this.deadZone = {
+			width: game.width * this.deadZoneRatio,
+			height: game.height * this.deadZoneRatio
+		};
+		this.deadZoneSnapRatio = 4;
+	}
+
+	onCanvasResize() {
+		var ratio = this.game.width / this.game.height;
+		//Set scale so this.height * scale = this.canvas.height
+
+		this.scale = this.game.canvas.height / this.game.height;
+		if (this.game.height * ratio > this.game.canvas.width) {
+			this.scale = this.game.canvas.width / this.game.width;
+		}
 	}
 
 	getMidPoint() {
@@ -24,6 +42,42 @@ class Camera {
 		if (!this.game.input.pointer.movedThisFrame) {
 			this.game.input.pointer.world = this.game.input.pointer.world.add(v);
 		}
+	}
+
+	followPlayer(position) {
+		var move = new Vector(0, 0);
+
+		if (position.x > this.position.x + this.deadZone.width * 0.5) {
+			var distance = position.x - (this.position.x + this.deadZone.width * 0.5);
+			var t = Math.pow(distance / (this.deadZone.width * this.deadZoneSnapRatio * 0.5), 1);
+
+			var nextX = Maths.lerp(this.position.x, t, position.x - this.deadZone.width * 0.5);
+			move.x = nextX - this.position.x;
+		} else if (position.x < this.position.x - this.deadZone.width * 0.5) {
+			var distance = (this.position.x - this.deadZone.width * 0.5) - position.x;
+			var t = Math.pow(distance / (this.deadZone.width * this.deadZoneSnapRatio * 0.5), 1);
+
+			var nextX = Maths.lerp(this.position.x, t, position.x + this.deadZone.width * 0.5);
+			move.x = nextX - this.position.x;
+		}
+
+		if (position.y > this.position.y + this.deadZone.height * 0.5) {
+			var distance = position.y - (this.position.y + this.deadZone.height * 0.5);
+			var t = Math.pow(distance / (this.deadZone.height * this.deadZoneSnapRatio * 0.5), 1);
+
+			var nextY = Maths.lerp(this.position.y, t, position.y - this.deadZone.height * 0.5);
+			move.y = nextY - this.position.y;
+		} else if (position.y < this.position.y - this.deadZone.height * 0.5) {
+			var distance = (this.position.y - this.deadZone.height * 0.5) - position.y;
+			var t = Math.pow(distance / (this.deadZone.height * this.deadZoneSnapRatio * 0.5), 1);
+
+			var nextY = Maths.lerp(this.position.y, t, position.y + this.deadZone.height * 0.5);
+			move.y = nextY - this.position.y;
+		}
+
+		this.move(move);
+
+		// this.lerp(position, 0.05);
 	}
 }
 

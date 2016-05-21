@@ -7,6 +7,7 @@ import Grenade from './Grenade';
 class Player extends Circle {
 	constructor(game, position) {
 		super(game, position, 16, '#ffa500');
+		this.tag = 'player';
 		this.rotation = 0;
 		this.counter = 0;
 		this.velocity = new Vector(0, 0);
@@ -52,7 +53,7 @@ class Player extends Circle {
 		}
 		
 		//TODO: camera dead zone.
-		this.game.camera.lerp(this.position, 0.05);
+		this.game.camera.followPlayer(this.position);
 	}
 
 	fire() {
