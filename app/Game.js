@@ -28,7 +28,8 @@ class Game {
 		this.updatables = [];
 		this.camera = new Camera(this);
 		this.paused = true;
-		this.world = new Group(this);
+		this.canvases = [];
+		this.world = new Group(this, this.canvas, false);
 		this.lastTimestamp = 0;
 		this.fps = fps;
 		this.timeScaleFPS = 30;
@@ -52,6 +53,7 @@ class Game {
 				clicked: false
 			}
 		};
+		this.circleCanvases = [];
 		window.onresize = this.resizeCanvas.bind(this);
 		window.onkeydown = this.onkeydown.bind(this);
 		window.onkeyup = this.onkeyup.bind(this);
@@ -59,15 +61,54 @@ class Game {
 		window.onmousedown = this.onmousedown.bind(this);
 		window.onmouseup = this.onmouseup.bind(this);
 		this.resizeCanvas();
-
+		this.preRenderCircles();
 		var main = new Main(this);
 		this.state.add(main);
 		this.state.switchState('main');
 	}
 
+	createCanvas(id) {
+		var canv = document.createElement('canvas');
+		canv.id = id;
+		canv.style.zIndex = this.canvases.push(canv) + 1;
+		document.body.appendChild(canv);
+		this.resizeCanvas();
+		return canv;
+	}
+
+	preRenderCircles() {
+		for (var r = 2; r <= 512; r*=2) {
+			var cache_canvas = document.createElement('canvas');
+			cache_canvas.width = cache_canvas.height = r * 2;
+			var cache_ctx = cache_canvas.getContext('2d');
+			
+			cache_ctx.fillStyle = '#87ceeb';
+			cache_ctx.beginPath();
+			cache_ctx.arc(
+				r,
+				r,
+				r,
+				0, 
+				2 * Math.PI
+			);
+			cache_ctx.fill();
+
+			this.circleCanvases[r] = cache_canvas;
+		}
+	}
+
+	getCachedCircle(radius) {
+		return this.circleCanvases[radius];
+	}
+
 	resizeCanvas () {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
+
+		for (var i = this.canvases.length - 1; i >= 0; i--) {
+			this.canvases[i].width = window.innerWidth;
+			this.canvases[i].height = window.innerHeight;
+		}
 		this.camera.onCanvasResize();
 	}
 

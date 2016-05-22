@@ -6,8 +6,8 @@ class Camera {
 		this.position = new Vector(x, y);
 		this.game = game;
 		this.scale = scale;
-		this.deadZoneRatio = 0.25;
-		this.debug = true;
+		this.deadZoneRatio = 0.125;
+		this.debug = false;
 		this.deadZone = {
 			width: game.width * this.deadZoneRatio,
 			height: game.height * this.deadZoneRatio
@@ -15,6 +15,15 @@ class Camera {
 		this.deadZoneSnapRatio = 4;
 	}
 
+	inBounds(x, y, radius) {
+		return (
+			x - radius < this.game.canvas.width  && 
+			x + radius > 0 && 
+			y - radius < this.game.canvas.height && 
+			y + radius > 0
+		);
+	}
+ 
 	onCanvasResize() {
 		var ratio = this.game.width / this.game.height;
 		//Set scale so this.height * scale = this.canvas.height
@@ -23,6 +32,8 @@ class Camera {
 		if (this.game.height * ratio > this.game.canvas.width) {
 			this.scale = this.game.canvas.width / this.game.width;
 		}
+
+		this.scale = 1;
 	}
 
 	getMidPoint() {

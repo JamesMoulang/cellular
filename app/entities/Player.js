@@ -13,6 +13,7 @@ class Player extends Circle {
 		this.velocity = new Vector(0, 0);
 		this.maxSpeed = 10;
 		this.trailRate = 0.5;
+		this.useCache = false;
 	}
 
 	update() {

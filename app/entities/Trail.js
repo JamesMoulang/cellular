@@ -9,6 +9,7 @@ class Trail extends Circle {
 		this.counter = 0;
 		this.velocity = velocity;
 		this.wiggle = new Vector(Math.random()-0.5, Math.random()-0.5).normalised().times(1);
+		this.useCache = false;
 	}
 
 	update() {
