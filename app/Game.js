@@ -8,6 +8,7 @@ import StateManager from './StateManager';
 import Main from './states/Main';
 import Preload from './states/Preload';
 import KeyInput from './KeyInput';
+import Ticker from './Ticker';
 
 const codes = {
 	w: 87,
@@ -39,6 +40,7 @@ class Game {
 		this.timeScaleFPS = 30;
 		this.idealFrameTime = 1000 / this.timeScaleFPS;
 		this.tickTime = this.idealFrameTime * 0.25;
+		this.tickers = [];
 		this.delta = 0;
 		this.gravity = -0.098;
 		this.windDirection = new Vector(0.5, 0.5).normalised();
@@ -224,6 +226,10 @@ class Game {
 	loop() {
 		var lastFrameTimeElapsed = this.timestamp() - this.lastTimestamp;
 		this.frameTimeElapseCounter += lastFrameTimeElapsed;
+
+		_.each(this.tickers, (ticker) => {
+
+		});
 
 		if (this.frameTimeElapseCounter >= this.idealFrameTime) {
 			this.delta = this.frameTimeElapseCounter / this.idealFrameTime;
