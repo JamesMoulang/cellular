@@ -6,6 +6,8 @@ import Maths from './Maths';
 import Vector from './Vector';
 import StateManager from './StateManager';
 import Main from './states/Main';
+import Preload from './states/Preload';
+import KeyInput from './KeyInput';
 
 const codes = {
 	w: 87,
@@ -15,7 +17,8 @@ const codes = {
 	up: 38,
 	left: 37,
 	down: 40,
-	right: 39
+	right: 39,
+	space: 32
 };
 
 class Game {
@@ -31,18 +34,21 @@ class Game {
 		this.canvases = [];
 		this.world = new Group(this, this.canvas, false);
 		this.lastTimestamp = 0;
+		this.frameTimeElapseCounter = 0;
 		this.fps = fps;
 		this.timeScaleFPS = 30;
 		this.idealFrameTime = 1000 / this.timeScaleFPS;
+		this.tickTime = this.idealFrameTime * 0.25;
 		this.delta = 0;
 		this.gravity = -0.098;
 		this.windDirection = new Vector(0.5, 0.5).normalised();
 		this.state = new StateManager();
 		this.input = {
-			up: false,
-			down: false,
-			left: false,
-			right: false,
+			up: new KeyInput(),
+			down: new KeyInput(),
+			left: new KeyInput(),
+			right: new KeyInput(),
+			space: new KeyInput(),
 			vertical: 0,
 			horizontal: 0,
 			pointer: {
@@ -62,9 +68,13 @@ class Game {
 		window.onmouseup = this.onmouseup.bind(this);
 		this.resizeCanvas();
 		this.preRenderCircles();
+
 		var main = new Main(this);
 		this.state.add(main);
-		this.state.switchState('main');
+		var preload = new Preload(this);
+		this.state.add(preload);
+
+		this.state.switchState('preload');
 	}
 
 	createCanvas(id) {
@@ -138,23 +148,26 @@ class Game {
 		switch(e.keyCode) {
 			case codes.up:
 			case codes.w:
-				this.input.up = false;
+				this.input.up.isDown = false;
 				this.input.vertical++;
 				break;
 			case codes.left:
 			case codes.a:
-				this.input.left = false;
+				this.input.left.isDown = false;
 				this.input.horizontal++;
 				break;
 			case codes.down:
 			case codes.s:
-				this.input.down = false;
+				this.input.down.isDown = false;
 				this.input.vertical--;
 				break;
 			case codes.right:
 			case codes.d:
-				this.input.right = false;
+				this.input.right.isDown = false;
 				this.input.horizontal--;
+				break;
+			case codes.space:
+				this.input.space.isDown = false;
 				break;
 			default:
 				break;
@@ -168,23 +181,31 @@ class Game {
 		switch(e.keyCode) {
 			case codes.up:
 			case codes.w:
-				this.input.up = true;
+				this.input.up.isDown = true;
+				this.input.up.clicked = true;
 				this.input.vertical--;
 				break;
 			case codes.left:
 			case codes.a:
-				this.input.left = true;
+				this.input.left.isDown = true;
+				this.input.left.clicked = true;
 				this.input.horizontal--;
 				break;
 			case codes.down:
 			case codes.s:
-				this.input.down = true;
+				this.input.down.isDown = true;
+				this.input.down.clicked = true;
 				this.input.vertical++;
 				break;
 			case codes.right:
 			case codes.d:
-				this.input.right = true;
+				this.input.right.isDown = true;
+				this.input.right.clicked = true;
 				this.input.horizontal++;
+				break;
+			case codes.space:
+				this.input.space.isDown = true;
+				this.input.space.clicked = true;
 				break;
 			default:
 				break;
@@ -202,13 +223,18 @@ class Game {
 
 	loop() {
 		var lastFrameTimeElapsed = this.timestamp() - this.lastTimestamp;
-		this.delta = lastFrameTimeElapsed / this.idealFrameTime;
-		this.update();
-		this.render();
+		this.frameTimeElapseCounter += lastFrameTimeElapsed;
+
+		if (this.frameTimeElapseCounter >= this.idealFrameTime) {
+			this.delta = this.frameTimeElapseCounter / this.idealFrameTime;
+			this.update();
+			this.render();
+			this.frameTimeElapseCounter = 0;
+		}
 
 		this.lastTimestamp = this.timestamp();
-		if (lastFrameTimeElapsed < this.idealFrameTime) {
-			setTimeout(this.loop.bind(this), this.idealFrameTime - lastFrameTimeElapsed);
+		if (lastFrameTimeElapsed < this.tickTime) {
+			setTimeout(this.loop.bind(this), this.tickTime - lastFrameTimeElapsed);
 		} else {
 			this.loop();
 		}
@@ -225,6 +251,11 @@ class Game {
 		this.world.update();
 		this.input.pointer.movedThisFrame = false;
 		this.input.pointer.clicked = false;
+		this.input.up.clicked = false;
+		this.input.down.clicked = false;
+		this.input.left.clicked = false;
+		this.input.right.clicked = false;
+		this.input.space.clicked = false;
 	}
 
 	timestamp() {

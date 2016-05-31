@@ -14,6 +14,7 @@ class Player extends Circle {
 		this.maxSpeed = 10;
 		this.trailRate = 0.5;
 		this.useCache = false;
+		this.state = null;
 	}
 
 	update() {
@@ -37,8 +38,17 @@ class Player extends Circle {
 		}
 		this.position = this.position.add(this.velocity);
 
-		if (this.game.input.pointer.clicked) {
-			this.fire();
+		// if (this.game.input.pointer.clicked) {
+		// 	this.fire();
+		// }
+
+		if (this.game.input.space.clicked) {
+			for (var i = 0; i < this.state.drums.length; i++) {
+				if (this.position.distance(this.state.drums[i].position) <= this.radius + this.state.drums[i].radius) {
+					console.log(this.state.drums[i]);
+					this.state.drums[i].activate();
+				}
+			}
 		}
 
 		if (this.counter > this.trailRate) {

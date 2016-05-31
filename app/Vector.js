@@ -28,6 +28,10 @@ class Vector {
 		return Math.sqrt(this.x * this.x + this.y * this.y);
 	}
 
+	distance(v2) {
+		return this.minus(v2).magnitude();
+	}
+
 	lerp(v2, t) {
 		var direction = v2.minus(this);
 		var distance = direction.magnitude() * t;

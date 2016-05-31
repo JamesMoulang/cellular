@@ -33,7 +33,7 @@ class Camera {
 			this.scale = this.game.canvas.width / this.game.width;
 		}
 
-		this.scale = 1;
+		// this.scale = 1;
 	}
 
 	getMidPoint() {
