@@ -10,6 +10,8 @@ import Preload from './states/Preload';
 import KeyInput from './KeyInput';
 import Ticker from './Ticker';
 
+var _ = require('underscore');
+
 const codes = {
 	w: 87,
 	a: 65,
@@ -28,23 +30,30 @@ class Game {
 		this.ctx = ctx;
 		this.width = width;
 		this.height = height;
-		this.backgroundColour = '#a1a1a1';
+		this.backgroundColour = '#ffffff';
+		
 		this.updatables = [];
 		this.camera = new Camera(this);
 		this.paused = true;
 		this.canvases = [];
 		this.world = new Group(this, this.canvas, false);
+		
 		this.lastTimestamp = 0;
 		this.frameTimeElapseCounter = 0;
 		this.fps = fps;
 		this.timeScaleFPS = 30;
 		this.idealFrameTime = 1000 / this.timeScaleFPS;
-		this.tickTime = this.idealFrameTime * 0.25;
-		this.tickers = [];
 		this.delta = 0;
+		
+		this.tickTime = this.idealFrameTime * 0.25;
+		this.tickers = {};
+		this.barTime = 2000;
+		this.tickers.twelve = new Ticker(this, this.barTime, 12);
+		this.tickers.sixteen = new Ticker(this, this.barTime, 16);
+
 		this.gravity = -0.098;
 		this.windDirection = new Vector(0.5, 0.5).normalised();
-		this.state = new StateManager();
+
 		this.input = {
 			up: new KeyInput(),
 			down: new KeyInput(),
@@ -61,7 +70,9 @@ class Game {
 				clicked: false
 			}
 		};
+
 		this.circleCanvases = [];
+
 		window.onresize = this.resizeCanvas.bind(this);
 		window.onkeydown = this.onkeydown.bind(this);
 		window.onkeyup = this.onkeyup.bind(this);
@@ -71,12 +82,19 @@ class Game {
 		this.resizeCanvas();
 		this.preRenderCircles();
 
+		this.state = new StateManager();
 		var main = new Main(this);
 		this.state.add(main);
 		var preload = new Preload(this);
 		this.state.add(preload);
-
 		this.state.switchState('preload');
+	}
+
+	setBarTime(bt) {
+		this.barTime = bt;
+		_.each(this.tickers, (ticker) => {
+			ticker.barTime = bt;
+		});
 	}
 
 	createCanvas(id) {
@@ -228,7 +246,7 @@ class Game {
 		this.frameTimeElapseCounter += lastFrameTimeElapsed;
 
 		_.each(this.tickers, (ticker) => {
-
+			ticker.update(lastFrameTimeElapsed);
 		});
 
 		if (this.frameTimeElapseCounter >= this.idealFrameTime) {

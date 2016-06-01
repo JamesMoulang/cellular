@@ -3,10 +3,17 @@ import Trail from './Trail';
 import Vector from '../Vector';
 import Maths from '../Maths';
 import Grenade from './Grenade';
+import Drum from './Drum';
+import Note from './Note';
 
-class Player extends Circle {
+class Player extends Drum {
 	constructor(game, position) {
-		super(game, position, 16, '#ffa500');
+		super(game, 'tom2', position, 16, '#ffa500', [
+			new Note(false, 4),
+			new Note(false, 4),
+			new Note(false, 4),
+			new Note(false, 4)
+		]);
 		this.tag = 'player';
 		this.rotation = 0;
 		this.counter = 0;
@@ -15,10 +22,23 @@ class Player extends Circle {
 		this.trailRate = 0.5;
 		this.useCache = false;
 		this.state = null;
+
+		this.speedMod = 1;
+		this.tickCount = 0;
+		this.game.tickers.sixteen.subscribe(this);
+	}
+
+	play() {
+		super.play();
+		this.radius = 64;
+		this.speedMod = 2.5;
 	}
 
 	update() {
 		this.counter += this.game.delta;
+
+		this.radius = Maths.towardsValue(this.radius, this.game.delta * 8, 16);
+		this.speedMod = Maths.towardsValue(this.speedMod, this.game.delta * 0.1, 1);
 
 		var inputVector = new Vector(
 			this.game.input.horizontal,
@@ -26,11 +46,11 @@ class Player extends Circle {
 		);
 
 		this.rotation = -this.position.angleTo(this.game.input.pointer.world) - Math.PI * 0.5;
-		this.velocity = this.velocity.add(inputVector.normalised().times(this.game.delta * 0.5));
+		this.velocity = this.velocity.add(inputVector.normalised().times(this.game.delta * 0.5 * Math.pow(this.speedMod, 3)));
 		this.friction();
-		if (this.velocity.magnitude() > this.maxSpeed) {
+		if (this.velocity.magnitude() > this.maxSpeed * Math.pow(this.speedMod, 2)) {
 			this.colour = '#08ee80';
-			this.velocity = this.velocity.normalised().times(this.maxSpeed);
+			this.velocity = this.velocity.normalised().times(this.maxSpeed * Math.pow(this.speedMod, 2));
 			this.trailRate = 0;
 		} else {
 			this.colour = '#ffa500';
