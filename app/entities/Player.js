@@ -9,10 +9,46 @@ import Note from './Note';
 class Player extends Drum {
 	constructor(game, position) {
 		super(game, 'tom2', position, 16, '#ffa500', [
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 4),
+			new Note(false, 8),
+			new Note(false, 16),
 			new Note(false, 4),
 			new Note(false, 4),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
 			new Note(false, 4),
-			new Note(false, 4)
+			new Note(false, 4),
+			new Note(true, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(true, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 4),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 2),
+			new Note(false, 4),
+			new Note (false, 4),
+			new Note (false, 2),
+			new Note (false, 2),
+			new Note (false, 4),
+			new Note (false, 2),
+			new Note (false, 2),
+			new Note (false, 4),
+			new Note (false, 4),
+			new Note (false, 8)
 		]);
 		this.tag = 'player';
 		this.rotation = 0;

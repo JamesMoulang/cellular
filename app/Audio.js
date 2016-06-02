@@ -19,7 +19,7 @@ var Audio = {
 		  	urls: urls,
 		  	onloaderror: function() {
 				this.cache[key] = null;
-				Console.warn("Couldn't put sound with url " + urls[0] + " and key " + key);
+				console.warn("Couldn't put sound with url " + urls[0] + " and key " + key);
 				this.loadedCount--;
 			}.bind(this),
 			onload: function() {
@@ -28,7 +28,7 @@ var Audio = {
 		});
 
 		if (this.cache[key] != null) {
-			Console.warn("Already cached a sound with key " + key);
+			console.warn("Already cached a sound with key " + key);
 		} else {
 			this.cache[key] = sound;
 		}
@@ -40,7 +40,7 @@ var Audio = {
 
 	play: function(key) {
 		if (this.cache[key] == null) {
-			Console.warn("Can't find a sound with key " + key);
+			console.warn("Can't find a sound with key " + key);
 		} else {
 			this.cache[key].play();
 		}
