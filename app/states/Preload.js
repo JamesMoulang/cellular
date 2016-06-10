@@ -10,6 +10,7 @@ class Preload extends State {
 	create() {
 		Audio.load('tom1', '/tom1.wav');
 		Audio.load('tom2', '/tom2.wav');
+		Audio.load('tick', '/tick.wav');
 	}
 
 	enter() {

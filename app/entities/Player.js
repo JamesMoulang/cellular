@@ -6,50 +6,9 @@ import Grenade from './Grenade';
 import Drum from './Drum';
 import Note from './Note';
 
-class Player extends Drum {
+class Player extends Circle {
 	constructor(game, position) {
-		super(game, 'tom2', position, 16, '#ffa500', [
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 4),
-			new Note(false, 8),
-			new Note(false, 16),
-			new Note(false, 4),
-			new Note(false, 4),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 4),
-			new Note(false, 4),
-			new Note(true, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(true, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 4),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 2),
-			new Note(false, 4),
-			new Note (false, 4),
-			new Note (false, 2),
-			new Note (false, 2),
-			new Note (false, 4),
-			new Note (false, 2),
-			new Note (false, 2),
-			new Note (false, 4),
-			new Note (false, 4),
-			new Note (false, 8)
-		]);
+		super(game, position);
 		this.tag = 'player';
 		this.rotation = 0;
 		this.counter = 0;
@@ -58,16 +17,101 @@ class Player extends Drum {
 		this.trailRate = 0.5;
 		this.useCache = false;
 		this.state = null;
-
 		this.speedMod = 1;
 		this.tickCount = 0;
-		this.game.tickers.sixteen.subscribe(this);
+
+		//Drum inputs.
+		this.rightDrum = {
+			active: false,
+			timestamp: 0,
+		};
+		this.leftDrum = {
+			active: false,
+			timestamp: 0,
+		};
+		this.vertDrum = {
+			active: false,
+			timestamp: 0,
+		};
+		this.lastBeatTimeStamp = 0;
+
+		this.drum = new Drum(
+			game, 
+			'tick', 
+			new Vector(0, 0, 0), 
+			[
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2)
+			],
+			this.play.bind(this)
+		);
+		this.game.tickers.sixteen.subscribe(this.drum);
+		this.onbeat = false;
 	}
 
 	play() {
-		super.play();
-		this.radius = 64;
-		this.speedMod = 2.5;
+		this.lastBeatTimeStamp = this.game.timestamp();
+		this.onbeat = !this.onbeat;
+		if (this.onbeat) {
+			this.drum.sound.play();
+		}
+		this.checkBeats(true);
+
+	}
+
+	checkBeats(clear) {
+		var timestamp = this.lastBeatTimeStamp;
+		var timeslot = this.game.tickers.sixteen.allowableTime;
+
+		if (this.vertDrum.active && Math.abs(timestamp - this.vertDrum.timestamp) <= timeslot) {
+			this.velocity.y += (this.onbeat ? -1 : 1) * 750;
+			this.radius = 64;
+		} else if (this.onbeat && this.leftDrum.active && Math.abs(timestamp - this.leftDrum.timestamp) <= timeslot) {
+			this.velocity.x -= 750;
+			this.radius = 64;
+		} else if (this.onbeat && this.rightDrum.active && Math.abs(timestamp - this.rightDrum.timestamp) <= timeslot) {
+			console.log(this.rightDrum.timestamp > timestamp ? 'slow' : 'fast');
+			this.velocity.x += 750;
+			this.radius = 64;
+		}
+
+		if (clear) {
+			this.vertDrum.active = false;
+			this.leftDrum.active = false;
+			this.rightDrum.active = false;
+		}
+	}
+
+	directControl() {
+		var inputVector = new Vector(
+			this.game.input.horizontal,
+			this.game.input.vertical
+		);
+
+		this.velocity = this.velocity.add(inputVector.normalised().times(this.game.delta * 0.5 * Math.pow(this.speedMod, 3)));
+	}
+
+	drumControl() {
+		var timestamp = this.game.timestamp();
+		if (this.game.input.left.clicked && this.game.input.right.clicked) {
+			this.vertDrum.active = true;
+			this.vertDrum.timestamp = timestamp;
+			this.checkBeats();
+		} else if (this.game.input.left.clicked) {
+			this.leftDrum.active = true;
+			this.leftDrum.timestamp = timestamp;
+			this.checkBeats();
+		} else if (this.game.input.right.clicked) {
+			this.rightDrum.active = true;
+			this.rightDrum.timestamp = timestamp;
+			this.checkBeats();
+		}
 	}
 
 	update() {
@@ -75,14 +119,7 @@ class Player extends Drum {
 
 		this.radius = Maths.towardsValue(this.radius, this.game.delta * 8, 16);
 		this.speedMod = Maths.towardsValue(this.speedMod, this.game.delta * 0.1, 1);
-
-		var inputVector = new Vector(
-			this.game.input.horizontal,
-			this.game.input.vertical
-		);
-
-		this.rotation = -this.position.angleTo(this.game.input.pointer.world) - Math.PI * 0.5;
-		this.velocity = this.velocity.add(inputVector.normalised().times(this.game.delta * 0.5 * Math.pow(this.speedMod, 3)));
+		this.drumControl();
 		this.friction();
 		if (this.velocity.magnitude() > this.maxSpeed * Math.pow(this.speedMod, 2)) {
 			this.colour = '#08ee80';
@@ -93,19 +130,6 @@ class Player extends Drum {
 			this.trailRate = 1.5;
 		}
 		this.position = this.position.add(this.velocity);
-
-		// if (this.game.input.pointer.clicked) {
-		// 	this.fire();
-		// }
-
-		if (this.game.input.space.clicked) {
-			for (var i = 0; i < this.state.drums.length; i++) {
-				if (this.position.distance(this.state.drums[i].position) <= this.radius + this.state.drums[i].radius) {
-					console.log(this.state.drums[i]);
-					this.state.drums[i].activate();
-				}
-			}
-		}
 
 		if (this.counter > this.trailRate) {
 			this.game.world.add(new Trail(

@@ -6,7 +6,7 @@ class Ticker {
 		this.barTime = barTime;
 		this.beats = beats;
 		this.beatTime = this.barTime / this.beats;
-
+		this.allowableTime = this.beatTime * 0.75;
 		this.subscribers = [];
 		this.elapsedTime = 0;
 	}

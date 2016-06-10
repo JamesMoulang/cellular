@@ -1,21 +1,23 @@
-import Circle from '../Circle';
 import Maths from '../Maths';
 import Vector from '../Vector';
 import Note from './Note';
 import Audio from '../Audio';
+import Destroyable from '../Destroyable';
 
-class Drum extends Circle {
-	constructor(game, key, position, radius, colour, notes) {
-		console.trace();
-		console.log(game, key, position, radius, colour, notes);
-		super(game, position, radius, colour);
+class Drum extends Destroyable {
+	constructor(game, key, position, notes, play) {
+		super();
 		this.tag = 'Drum';
-		this.active = false;
 		this.notes = notes;
 		this.ticks = [];
 		this.setTicks(this.notes);
 		this.key = key;
 		this.ticker = 0;
+		this.sound = Audio.create(key);
+
+		if (typeof(play) !== 'undefined') {
+			this.play = play;
+		}
 	}
 
 	setNotes(notes) {
@@ -47,15 +49,11 @@ class Drum extends Circle {
 	}
 
 	play() {
-		Audio.play(this.key);
-	}
-
-	activate() {
-		this.active = !this.active;
+		this.sound.play();
 	}
 
 	update() {
-		
+		this.radius = Maths.towardsValue(this.radius, this.game.delta * 5, 32);
 	}
 }
 

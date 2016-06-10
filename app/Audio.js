@@ -17,7 +17,7 @@ var Audio = {
 
 		var sound = new Howl({
 		  	urls: urls,
-		  	onloaderror: function() {
+		  	onloaderror: function(err) {
 				this.cache[key] = null;
 				console.warn("Couldn't put sound with url " + urls[0] + " and key " + key);
 				this.loadedCount--;
@@ -31,6 +31,18 @@ var Audio = {
 			console.warn("Already cached a sound with key " + key);
 		} else {
 			this.cache[key] = sound;
+			console.log(this.cache);
+		}
+	},
+
+	create: function(key) {
+		if (this.cache[key] == null) {
+			console.warn("No cached sounds with key " + key);
+			return null;
+		} else {
+			return new Howl({
+			  	urls: [this.cache[key]._src]
+			});
 		}
 	},
 
