@@ -9,6 +9,7 @@ import Enemy from '../entities/Enemy';
 import Group from '../Group';
 import Note from '../entities/Note';
 import PlayerListener from '../entities/PlayerListener';
+import BoostListener from '../entities/BoostListener';
 
 class Main extends State {
 	constructor(game) {
@@ -23,6 +24,9 @@ class Main extends State {
 		var lnote = [2, -2, -2, 2,2, -2, -2, 2,-16];
 		var rnote = [-2, 2, -2, -2,-2, 2, -2, -2,-16];
 
+		// lnote = [2, -2, 2, -2, 2, -2, 2, -2];
+		// rnote = [-2, 2, -2, 2, -2, 2, -2, 2];
+
 		var ddrum = this.game.world.add(
 			new DrumPair(
 					this.game, 
@@ -33,15 +37,7 @@ class Main extends State {
 					notesGenerator(rnote)
 				)
 		);
-		this.game.tickers.sixteen.subscribe(ddrum);
-
-		var testlistener = new PlayerListener(
-			this.game, 
-			metronome,
-			this.game.tickers.sixteen.allowableTime
-		);
-		this.game.pListeners.push(testlistener);
-		this.game.tickers.sixteen.subscribe(testlistener);
+		// this.game.tickers.sixteen.subscribe(ddrum);
 
 		var metronomeDrum = this.game.world.add(
 			new Drum(
@@ -54,6 +50,7 @@ class Main extends State {
 		this.game.tickers.sixteen.subscribe(metronomeDrum);
 
 		var player = this.game.world.add(new Player(this.game));
+		var boost = new BoostListener(this.game, player);
 	}
 
 	enter() {

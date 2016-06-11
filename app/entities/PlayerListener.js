@@ -15,12 +15,6 @@ class PlayerListener extends BeatThing {
 
 	onCorrect() {
 		console.log("GOOD! ");
-		if (this.slow) {
-			// console.log("slow");
-		}
-		if (this.fast) {
-			// console.log("fast");
-		}
 	}
 
 	onIncorrect() {
