@@ -4,8 +4,9 @@ import Destroyable from '../Destroyable';
 class DrumPair extends Destroyable {
 	constructor(game, leftkey, rightkey, position, leftnotes, rightnotes, play) {
 		this.position = position;
-		this.leftdrum = new Drum(this.game, leftkey, position, leftnotes);
-		this.rightdrum = new Drum(this.game, rightkey, position, rightnotes);
+		this.leftdrum = new Drum(this.game, leftkey, position, leftnotes, play);
+		this.rightdrum = new Drum(this.game, rightkey, position, rightnotes, play);
+
 	}
 
 	tick() {
