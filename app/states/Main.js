@@ -16,52 +16,52 @@ class Main extends State {
 	}
 
 	create() {
-		// var drum = this.game.world.add(
-		// 	new Drum(this.game, 'tom1', new Vector(0, 0), [
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 4),
-		// 		new Note(false, 8),
-		// 		new Note(false, 16),
-		// 		new Note(false, 4),
-		// 		new Note(false, 4),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 4),
-		// 		new Note(false, 4),
-		// 		new Note(true, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(true, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 4),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 2),
-		// 		new Note(false, 4),
-		// 		new Note (false, 4),
-		// 		new Note (false, 2),
-		// 		new Note (false, 2),
-		// 		new Note (false, 4),
-		// 		new Note (false, 2),
-		// 		new Note (false, 2),
-		// 		new Note (false, 4),
-		// 		new Note (false, 4),
-		// 		new Note (false, 8)
-		// 	])
-		// );
-		// this.game.tickers.sixteen.subscribe(drum);
-		// this.drums.push(drum);
+		var drum = this.game.world.add(
+			new Drum(this.game, 'tom1', new Vector(0, 0), [
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 4),
+				new Note(false, 8),
+				new Note(false, 16),
+				new Note(false, 4),
+				new Note(false, 4),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 4),
+				new Note(false, 4),
+				new Note(true, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(true, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 4),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 2),
+				new Note(false, 4),
+				new Note (false, 4),
+				new Note (false, 2),
+				new Note (false, 2),
+				new Note (false, 4),
+				new Note (false, 2),
+				new Note (false, 2),
+				new Note (false, 4),
+				new Note (false, 4),
+				new Note (false, 8)
+			])
+		);
+		this.game.tickers.sixteen.subscribe(drum);
+		this.drums.push(drum);
 		var player = this.game.world.add(new Player(this.game));
 		this.game.enemyCount = 0;
 		player.state = this;

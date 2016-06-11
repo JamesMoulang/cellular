@@ -7,6 +7,7 @@ import Destroyable from '../Destroyable';
 class Drum extends Destroyable {
 	constructor(game, key, position, notes, play) {
 		super();
+		this.game = game;
 		this.tag = 'Drum';
 		this.notes = notes;
 		this.ticks = [];
@@ -53,7 +54,11 @@ class Drum extends Destroyable {
 	}
 
 	update() {
-		this.radius = Maths.towardsValue(this.radius, this.game.delta * 5, 32);
+
+	}
+
+	render() {
+		
 	}
 }
 
