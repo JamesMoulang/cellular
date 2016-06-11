@@ -2,6 +2,7 @@ import State from '../State';
 import Circle from '../Circle';
 import Player from '../entities/Player';
 import Drum from '../entities/Drum';
+import DrumPair from '../entities/DrumPair';
 import notesGenerator from '../notesGenerator';
 import Vector from '../Vector';
 import Enemy from '../entities/Enemy';
