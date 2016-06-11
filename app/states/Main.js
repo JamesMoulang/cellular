@@ -17,52 +17,9 @@ class Main extends State {
 	}
 
 	create() {
-		var test = [
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 4),
-				new Note(false, 8),
-				new Note(false, 16),
-				new Note(false, 4),
-				new Note(false, 4),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 4),
-				new Note(false, 4),
-				new Note(true, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(true, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 4),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 4),
-				new Note (false, 4),
-				new Note (false, 2),
-				new Note (false, 2),
-				new Note (false, 4),
-				new Note (false, 2),
-				new Note (false, 2),
-				new Note (false, 4),
-				new Note (false, 4),
-				new Note (false, 8)
-			];
-
-		var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2]);
+		var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2, -2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 4, 2, 2, 4, 2, 2, 4, 4, 8]);
 		var drum = this.game.world.add(new Drum(this.game, 'tom1', new Vector(0, 0), notes));
-		this.game.tickers.sixteen.subscribe(drum);
+		// this.game.tickers.sixteen.subscribe(drum);
 		this.drums.push(drum);
 		var player = this.game.world.add(new Player(this.game));
 		this.game.enemyCount = 0;

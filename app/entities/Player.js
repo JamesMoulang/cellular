@@ -13,7 +13,8 @@ class Player extends Circle {
 		this.rotation = 0;
 		this.counter = 0;
 		this.velocity = new Vector(0, 0);
-		this.maxSpeed = 10;
+		this.maxSpeed = 25;
+		this.frictionMag = 5;
 		this.trailRate = 0.5;
 		this.useCache = false;
 		this.state = null;
@@ -66,13 +67,13 @@ class Player extends Circle {
 		var timeslot = this.game.tickers.sixteen.allowableTime;
 
 		if (this.verticalDrum.active && Math.abs(timestamp - this.verticalDrum.timestamp) <= timeslot) {
-			this.velocity.y += (this.onbeat ? -1 : 1) * 750;
-			this.radius = 64;
+			this.velocity.y += (this.onbeat ? -1 : 1) * this.maxSpeed;
+			this.radius = 48;
 		}
 
 		if (this.horizontalDrum.active && Math.abs(timestamp - this.horizontalDrum.timestamp) <= timeslot) {
-			this.velocity.x += (this.onbeat ? 1 : -1) * 750;
-			this.radius = 64;
+			this.velocity.x += (this.onbeat ? 1 : -1) * this.maxSpeed;
+			this.radius = 48;
 		}
 
 		if (clear) {
@@ -153,8 +154,8 @@ class Player extends Circle {
 
 	friction() {
 		var toZero = this.velocity.normalised().times(-this.game.delta * 0.125);
-		this.velocity.x = Maths.towardsValue(this.velocity.x, Math.abs(toZero.x), 0);
-		this.velocity.y = Maths.towardsValue(this.velocity.y, Math.abs(toZero.y), 0);
+		this.velocity.x = Maths.towardsValue(this.velocity.x, Math.abs(toZero.x) * this.frictionMag, 0);
+		this.velocity.y = Maths.towardsValue(this.velocity.y, Math.abs(toZero.y) * this.frictionMag, 0);
 	}
 }
 
