@@ -11,11 +11,11 @@ class Preload extends State {
 		Audio.load('tom1', '/tom1.wav');
 		Audio.load('tom2', '/tom2.wav');
 		Audio.load('tick', '/tick.wav');
-		Audio.load('G#3', '/xylophone/g#3.wav');
+		Audio.load('Gs3', '/xylophone/Gs3.wav');
 		Audio.load('B4', '/xylophone/B4.wav');
-		Audio.load('C#4', '/xylophone/C#4.wav');
-		Audio.load('D#4', '/xylophone/D#4.wav');
-		Audio.load('F#4', '/xylophone/F#4.wav');
+		Audio.load('Cs4', '/xylophone/Cs4.wav');
+		Audio.load('Ds4', '/xylophone/Ds4.wav');
+		Audio.load('Fs4', '/xylophone/Fs4.wav');
 	}
 
 	enter() {

@@ -20,6 +20,7 @@ var Audio = {
 		  	onloaderror: function(err) {
 				this.cache[key] = null;
 				console.warn("Couldn't put sound with url " + urls[0] + " and key " + key);
+				console.log(err);
 				this.loadedCount--;
 			}.bind(this),
 			onload: function() {

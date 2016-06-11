@@ -2,6 +2,7 @@ import State from '../State';
 import Circle from '../Circle';
 import Player from '../entities/Player';
 import Drum from '../entities/Drum';
+import DrumPair from '../entities/DrumPair';
 import notesGenerator from '../notesGenerator';
 import Vector from '../Vector';
 import Enemy from '../entities/Enemy';
@@ -17,10 +18,15 @@ class Main extends State {
 	}
 
 	create() {
-		var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2, -2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 4, 2, 2, 4, 2, 2, 4, 4, 8]);
-		var drum = this.game.world.add(new Drum(this.game, 'tom1', new Vector(0, 0), notes));
+		//var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2, -2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 4, 2, 2, 4, 2, 2, 4, 4, 8]);
+		//var drum = this.game.world.add(new Drum(this.game, 'tom1', new Vector(0, 0), notes));
+		var lnote =[2, -2, -2, 2,2, -2, -2, 2,-16]
+		var rnote =[-2, 2, -2, -2,-2, 2, -2, -2,-16]
+
+		var ddrum = this.game.world.add(new DrumPair(this.game, 'Gs3', 'Fs4', new Vector(0, 0), notesGenerator(lnote), notesGenerator(rnote)));
+		this.game.tickers.sixteen.subscribe(ddrum);
 		// this.game.tickers.sixteen.subscribe(drum);
-		this.drums.push(drum);
+		this.drums.push(ddrum);
 		var player = this.game.world.add(new Player(this.game));
 		this.game.enemyCount = 0;
 		player.state = this;
