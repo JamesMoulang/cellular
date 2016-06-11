@@ -61,9 +61,9 @@ class Main extends State {
 			];
 
 		var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2]);
-		// var drum = this.game.world.add(new Drum(this.game, 'tom1', new Vector(0, 0), notes));
-		// this.game.tickers.sixteen.subscribe(drum);
-		// this.drums.push(drum);
+		var drum = this.game.world.add(new Drum(this.game, 'tom1', new Vector(0, 0), notes));
+		this.game.tickers.sixteen.subscribe(drum);
+		this.drums.push(drum);
 		var player = this.game.world.add(new Player(this.game));
 		this.game.enemyCount = 0;
 		player.state = this;

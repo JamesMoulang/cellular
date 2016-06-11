@@ -106,20 +106,6 @@ class Player extends Circle {
 			this.verticalDrum.timestamp = timestamp;
 			this.checkBeats();
 		}
-
-		if (this.game.input.left.clicked && this.game.input.right.clicked) {
-			this.vertDrum.active = true;
-			this.vertDrum.timestamp = timestamp;
-			this.checkBeats();
-		} else if (this.game.input.left.clicked) {
-			this.leftDrum.active = true;
-			this.leftDrum.timestamp = timestamp;
-			this.checkBeats();
-		} else if (this.game.input.right.clicked) {
-			this.rightDrum.active = true;
-			this.rightDrum.timestamp = timestamp;
-			this.checkBeats();
-		}
 	}
 
 	update() {
