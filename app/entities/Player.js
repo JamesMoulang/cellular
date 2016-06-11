@@ -21,17 +21,13 @@ class Player extends Circle {
 		this.tickCount = 0;
 
 		//Drum inputs.
-		this.rightDrum = {
+		this.verticalDrum = {
 			active: false,
-			timestamp: 0,
+			timestamp: 0
 		};
-		this.leftDrum = {
+		this.horizontalDrum = {
 			active: false,
-			timestamp: 0,
-		};
-		this.vertDrum = {
-			active: false,
-			timestamp: 0,
+			timestamp: 0
 		};
 		this.lastBeatTimeStamp = 0;
 
@@ -69,22 +65,19 @@ class Player extends Circle {
 		var timestamp = this.lastBeatTimeStamp;
 		var timeslot = this.game.tickers.sixteen.allowableTime;
 
-		if (this.vertDrum.active && Math.abs(timestamp - this.vertDrum.timestamp) <= timeslot) {
+		if (this.verticalDrum.active && Math.abs(timestamp - this.verticalDrum.timestamp) <= timeslot) {
 			this.velocity.y += (this.onbeat ? -1 : 1) * 750;
 			this.radius = 64;
-		} else if (this.onbeat && this.leftDrum.active && Math.abs(timestamp - this.leftDrum.timestamp) <= timeslot) {
-			this.velocity.x -= 750;
-			this.radius = 64;
-		} else if (this.onbeat && this.rightDrum.active && Math.abs(timestamp - this.rightDrum.timestamp) <= timeslot) {
-			console.log(this.rightDrum.timestamp > timestamp ? 'slow' : 'fast');
-			this.velocity.x += 750;
+		}
+
+		if (this.horizontalDrum.active && Math.abs(timestamp - this.horizontalDrum.timestamp) <= timeslot) {
+			this.velocity.x += (this.onbeat ? 1 : -1) * 750;
 			this.radius = 64;
 		}
 
 		if (clear) {
-			this.vertDrum.active = false;
-			this.leftDrum.active = false;
-			this.rightDrum.active = false;
+			this.horizontalDrum.active = false;
+			this.verticalDrum.active = false;
 		}
 	}
 
@@ -99,6 +92,21 @@ class Player extends Circle {
 
 	drumControl() {
 		var timestamp = this.game.timestamp();
+
+		if (this.game.input.p.clicked) {
+			console.log("p");
+			this.horizontalDrum.active = true;
+			this.horizontalDrum.timestamp = timestamp;
+			this.checkBeats();
+		}
+
+		if (this.game.input.q.clicked) {
+			console.log("q");
+			this.verticalDrum.active = true;
+			this.verticalDrum.timestamp = timestamp;
+			this.checkBeats();
+		}
+
 		if (this.game.input.left.clicked && this.game.input.right.clicked) {
 			this.vertDrum.active = true;
 			this.vertDrum.timestamp = timestamp;

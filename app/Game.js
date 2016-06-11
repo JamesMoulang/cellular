@@ -18,6 +18,8 @@ const codes = {
 	s: 83,
 	d: 68,
 	up: 38,
+	p: 80,
+	q: 81,
 	left: 37,
 	down: 40,
 	right: 39,
@@ -60,6 +62,8 @@ class Game {
 			left: new KeyInput(),
 			right: new KeyInput(),
 			space: new KeyInput(),
+			q: new KeyInput(),
+			p: new KeyInput(),
 			vertical: 0,
 			horizontal: 0,
 			pointer: {
@@ -166,6 +170,12 @@ class Game {
 
 	onkeyup(e) {
 		switch(e.keyCode) {
+			case codes.q:
+				this.input.q.isDown = false;
+				break;
+			case codes.p:
+				this.input.p.isDown = false;
+				break;
 			case codes.up:
 			case codes.w:
 				this.input.up.isDown = false;
@@ -199,6 +209,14 @@ class Game {
 
 	onkeydown(e) {
 		switch(e.keyCode) {
+			case codes.q:
+				this.input.q.isDown = true;
+				this.input.q.clicked = true;
+				break;
+			case codes.p:
+				this.input.p.isDown = true;
+				this.input.p.clicked = true;
+				break;
 			case codes.up:
 			case codes.w:
 				this.input.up.isDown = true;
@@ -280,6 +298,8 @@ class Game {
 		this.input.left.clicked = false;
 		this.input.right.clicked = false;
 		this.input.space.clicked = false;
+		this.input.q.clicked = false;
+		this.input.p.clicked = false;
 	}
 
 	timestamp() {
