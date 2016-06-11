@@ -53,6 +53,18 @@ class Game {
 		this.tickers.twelve = new Ticker(this, this.barTime, 12);
 		this.tickers.sixteen = new Ticker(this, this.barTime, 16);
 
+		this.playerlisteners = [];
+		this.playerDrums = {
+			p: {
+				active: false,
+				timestamp: 0
+			},
+			q: {
+				active: false,
+				timestamp: 0
+			}
+		};
+
 		this.gravity = -0.098;
 		this.windDirection = new Vector(0.5, 0.5).normalised();
 
@@ -92,6 +104,21 @@ class Game {
 		var preload = new Preload(this);
 		this.state.add(preload);
 		this.state.switchState('preload');
+	}
+
+	checkBeats(clear) {
+		//This is called either:
+			//When the player inputs a beat
+			//When a drum plays a beat.
+
+		//At this point, we check whether there has been a player input
+			//For this drum type
+			//At this time.
+
+		//And it can only trigger once per beat.
+		_.each(this.playerlisteners, function(listener, index) {
+			listener.checkBeats();
+		});
 	}
 
 	setBarTime(bt) {
