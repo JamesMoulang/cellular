@@ -20,7 +20,6 @@ var Audio = {
 		  	onloaderror: function(err) {
 				this.cache[key] = null;
 				console.warn("Couldn't put sound with url " + urls[0] + " and key " + key);
-				console.log(err);
 				this.loadedCount--;
 			}.bind(this),
 			onload: function() {
@@ -32,7 +31,6 @@ var Audio = {
 			console.warn("Already cached a sound with key " + key);
 		} else {
 			this.cache[key] = sound;
-			console.log(this.cache);
 		}
 	},
 

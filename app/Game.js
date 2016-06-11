@@ -9,6 +9,8 @@ import Main from './states/Main';
 import Preload from './states/Preload';
 import KeyInput from './KeyInput';
 import Ticker from './Ticker';
+import PlayerListener from './entities/PlayerListener';
+import Note from './entities/Note';
 
 var _ = require('underscore');
 
@@ -53,17 +55,8 @@ class Game {
 		this.tickers.twelve = new Ticker(this, this.barTime, 12);
 		this.tickers.sixteen = new Ticker(this, this.barTime, 16);
 
-		this.playerlisteners = [];
-		this.playerDrums = {
-			p: {
-				active: false,
-				timestamp: 0
-			},
-			q: {
-				active: false,
-				timestamp: 0
-			}
-		};
+		this.pListeners = [];
+		this.qListeners = [];
 
 		this.gravity = -0.098;
 		this.windDirection = new Vector(0.5, 0.5).normalised();
@@ -106,19 +99,11 @@ class Game {
 		this.state.switchState('preload');
 	}
 
-	checkBeats(clear) {
-		//This is called either:
-			//When the player inputs a beat
-			//When a drum plays a beat.
-
-		//At this point, we check whether there has been a player input
-			//For this drum type
-			//At this time.
-
-		//And it can only trigger once per beat.
-		_.each(this.playerlisteners, function(listener, index) {
-			listener.checkBeats();
-		});
+	triggerBeat(p) {
+		var timestamp = this.timestamp();
+		_.each(p ? this.pListeners : this.qListeners, function(listener) {
+			listener.triggerBeat(timestamp);
+		})
 	}
 
 	setBarTime(bt) {
@@ -237,40 +222,54 @@ class Game {
 	onkeydown(e) {
 		switch(e.keyCode) {
 			case codes.q:
+				if (!this.input.q.isDown) {
+					this.input.q.clicked = true;
+				}
 				this.input.q.isDown = true;
-				this.input.q.clicked = true;
 				break;
 			case codes.p:
+				if (!this.input.p.isDown) {
+					this.input.p.clicked = true;
+				}
 				this.input.p.isDown = true;
-				this.input.p.clicked = true;
 				break;
 			case codes.up:
 			case codes.w:
+				if (!this.input.up.isDown) {
+					this.input.up.clicked = true;
+				}
 				this.input.up.isDown = true;
-				this.input.up.clicked = true;
 				this.input.vertical--;
 				break;
 			case codes.left:
 			case codes.a:
+				if (!this.input.left.isDown) {
+					this.input.left.clicked = true;
+				}
 				this.input.left.isDown = true;
-				this.input.left.clicked = true;
 				this.input.horizontal--;
 				break;
 			case codes.down:
 			case codes.s:
+				if (!this.input.down.isDown) {
+					this.input.down.clicked = true;
+				}
 				this.input.down.isDown = true;
-				this.input.down.clicked = true;
 				this.input.vertical++;
 				break;
 			case codes.right:
 			case codes.d:
+				if (!this.input.right.isDown) {
+					this.input.right.clicked = true;
+				}
 				this.input.right.isDown = true;
-				this.input.right.clicked = true;
 				this.input.horizontal++;
 				break;
 			case codes.space:
+				if (!this.input.space.isDown) {
+					this.input.space.clicked = true;
+				}
 				this.input.space.isDown = true;
-				this.input.space.clicked = true;
 				break;
 			default:
 				break;
@@ -284,6 +283,10 @@ class Game {
 		this.paused = false;
 		this.lastTimestamp = this.timestamp();
 		this.loop();
+	}
+
+	timestamp() {
+		return performance.now();
 	}
 
 	loop() {
@@ -327,10 +330,6 @@ class Game {
 		this.input.space.clicked = false;
 		this.input.q.clicked = false;
 		this.input.p.clicked = false;
-	}
-
-	timestamp() {
-		return performance.now();
 	}
 
 	render() {

@@ -6,7 +6,7 @@ import Destroyable from '../Destroyable';
 import _ from 'underscore';
 
 class BeatThing extends Destroyable {
-	constructor(game, notes) {
+	constructor(game, notes, playCallback) {
 		super();
 		this.game = game;
 		this.tag = 'BeatThing';
@@ -14,6 +14,9 @@ class BeatThing extends Destroyable {
 		this.ticks = [];
 		this.setTicks(this.notes);
 		this.ticker = 0;
+		if (typeof(playCallback) !== 'undefined') {
+			this.play = playCallback;
+		}
 	}
 
 	setNotes(notes) {
@@ -45,7 +48,7 @@ class BeatThing extends Destroyable {
 	}
 
 	play() {
-		
+		// this.playCallback();
 	}
 
 	update() {

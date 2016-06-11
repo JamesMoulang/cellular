@@ -17,69 +17,8 @@ class Player extends Circle {
 		this.frictionMag = 5;
 		this.trailRate = 0.5;
 		this.useCache = false;
-		this.state = null;
 		this.speedMod = 1;
 		this.tickCount = 0;
-
-		//Drum inputs.
-		this.verticalDrum = {
-			active: false,
-			timestamp: 0
-		};
-		this.horizontalDrum = {
-			active: false,
-			timestamp: 0
-		};
-		this.lastBeatTimeStamp = 0;
-
-		this.drum = new Drum(
-			game, 
-			'tick', 
-			new Vector(0, 0, 0), 
-			[
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2),
-				new Note(false, 2)
-			],
-			this.play.bind(this)
-		);
-		this.game.tickers.sixteen.subscribe(this.drum);
-		this.onbeat = false;
-	}
-
-	play() {
-		this.lastBeatTimeStamp = this.game.timestamp();
-		this.onbeat = !this.onbeat;
-		if (this.onbeat) {
-			this.drum.sound.play();
-		}
-		this.checkBeats(true);
-
-	}
-
-	checkBeats(clear) {
-		var timestamp = this.lastBeatTimeStamp;
-		var timeslot = this.game.tickers.sixteen.allowableTime;
-
-		if (this.verticalDrum.active && Math.abs(timestamp - this.verticalDrum.timestamp) <= timeslot) {
-			this.velocity.y += (this.onbeat ? -1 : 1) * this.maxSpeed;
-			this.radius = 48;
-		}
-
-		if (this.horizontalDrum.active && Math.abs(timestamp - this.horizontalDrum.timestamp) <= timeslot) {
-			this.velocity.x += (this.onbeat ? 1 : -1) * this.maxSpeed;
-			this.radius = 48;
-		}
-
-		if (clear) {
-			this.horizontalDrum.active = false;
-			this.verticalDrum.active = false;
-		}
 	}
 
 	directControl() {
@@ -92,20 +31,12 @@ class Player extends Circle {
 	}
 
 	drumControl() {
-		var timestamp = this.game.timestamp();
-
 		if (this.game.input.p.clicked) {
-			console.log("p");
-			this.horizontalDrum.active = true;
-			this.horizontalDrum.timestamp = timestamp;
-			this.checkBeats();
+			this.game.triggerBeat(true);
 		}
 
 		if (this.game.input.q.clicked) {
-			console.log("q");
-			this.verticalDrum.active = true;
-			this.verticalDrum.timestamp = timestamp;
-			this.checkBeats();
+			this.game.triggerBeat(false);
 		}
 	}
 

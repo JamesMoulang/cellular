@@ -8,34 +8,52 @@ import Vector from '../Vector';
 import Enemy from '../entities/Enemy';
 import Group from '../Group';
 import Note from '../entities/Note';
+import PlayerListener from '../entities/PlayerListener';
 
 class Main extends State {
 	constructor(game) {
 		super(game);
 		this.tag = 'main';
-		this.enemies = null;
-		this.drums = [];
 	}
 
 	create() {
 		//var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2, -2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 4, 2, 2, 4, 2, 2, 4, 4, 8]);
-		//var drum = this.game.world.add(new Drum(this.game, 'tom1', new Vector(0, 0), notes));
-		var lnote =[2, -2, -2, 2,2, -2, -2, 2,-16]
-		var rnote =[-2, 2, -2, -2,-2, 2, -2, -2,-16]
+		var metronome = notesGenerator([4, 4, 4, 4]);
 
-		var ddrum = this.game.world.add(new DrumPair(this.game, 'Gs3', 'Fs4', new Vector(0, 0), notesGenerator(lnote), notesGenerator(rnote)));
+		var lnote = [2, -2, -2, 2,2, -2, -2, 2,-16];
+		var rnote = [-2, 2, -2, -2,-2, 2, -2, -2,-16];
+
+		var ddrum = this.game.world.add(
+			new DrumPair(
+					this.game, 
+					'Gs3', 
+					'Fs4', 
+					new Vector(0, 0), 
+					notesGenerator(lnote), 
+					notesGenerator(rnote)
+				)
+		);
 		this.game.tickers.sixteen.subscribe(ddrum);
-		// this.game.tickers.sixteen.subscribe(drum);
-		this.drums.push(ddrum);
+
+		var testlistener = new PlayerListener(
+			this.game, 
+			metronome,
+			this.game.tickers.sixteen.allowableTime
+		);
+		this.game.pListeners.push(testlistener);
+		this.game.tickers.sixteen.subscribe(testlistener);
+
+		var metronomeDrum = this.game.world.add(
+			new Drum(
+				this.game,
+				'tick',
+				new Vector(0, 0),
+				metronome
+			)
+		);
+		this.game.tickers.sixteen.subscribe(metronomeDrum);
+
 		var player = this.game.world.add(new Player(this.game));
-		this.game.enemyCount = 0;
-		player.state = this;
-
-		this.enemyCanvas = this.game.createCanvas('enemyCanvas');
-		this.enemies = this.game.world.add(new Group(this.game, this.enemyCanvas, true, '#ff0000'));
-
-		// var enemy = this.enemies.add(new Enemy(this, new Vector(), null, 512));
-		// console.log(this.enemies);
 	}
 
 	enter() {
