@@ -5,12 +5,6 @@ import Audio from '../Audio';
 import Destroyable from '../Destroyable';
 import _ from 'underscore';
 
-function notesGenerator(notes_array) {
-	return _.map(notes_array, function(note, index) {
-		return new Note(note < 0, Math.abs(note));
-	});
-}
-
 class Drum extends Destroyable {
 	constructor(game, key, position, notes, play) {
 		super();
@@ -70,4 +64,3 @@ class Drum extends Destroyable {
 }
 
 export default Drum;
-export default drumGenerator;
