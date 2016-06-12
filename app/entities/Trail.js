@@ -3,8 +3,8 @@ import Player from './Player';
 import Vector from '../Vector';
 
 class Trail extends Circle {
-	constructor(game, position, radius, colour, velocity) {
-		super (game, position, radius, colour);
+	constructor(game, position, radius, colour, velocity, zIndex) {
+		super (game, position, radius, colour, zIndex);
 		this.startRadius = radius;
 		this.counter = 0;
 		this.velocity = velocity;

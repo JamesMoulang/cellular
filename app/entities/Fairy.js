@@ -8,8 +8,8 @@ import Note from './Note';
 // potential colours: #BCE7FD, C492B1, AF3B6E, 424651, 21FA90
 // from https://coolors.co/app/bce7fd-c492b1-af3b6e-424651-21fa90
 class Fairy extends CallResponse {
-	constructor(game, position, lKey, rKey, lNotes, rNotes) {
-		super(game, position, lKey, rKey, lNotes, rNotes);
+	constructor(game, position, lKey, rKey, lNotes, rNotes, zIndex) {
+		super(game, position, lKey, rKey, lNotes, rNotes, zIndex);
 		this.tag = 'fairy';
 		this.rotation = 0;
 		this.following = false;
@@ -20,36 +20,33 @@ class Fairy extends CallResponse {
 		this.useCache = false;
 		this.speedMod = 1;
 		this.tickCount = 0;
-    this.colour = '#C492B1';
+		this.isAwake = true;
+    	this.colour = '#C492B1';
 		this.player = this.game.world.getEntitiesWithTagName('player')[0];
 		//console.log("should be printing");
 		console.log(this.player);
 	}
 
+	sleep() {
+		this.isAwake = false;
+	}
 
+	wake() {
+
+	}
 
 	update() {
 		super.update();
-		if(this.following){
+
+		if (this.isAwake) {
 			this.follow();
-		}
-		else{
-			//Calculate if it should be following
-			var fvec = new Vector(this.position.x, this.position.y);
-			var pvec = new Vector(this.player.position.x, this.player.position.y);
-			var vec = pvec.minus(fvec); // vector from fairy to player
-			var distance = Math.abs(vec.magnitude());
-			if(distance < 768){
-				this.following = true;
+		
+			this.friction();
+			this.position = this.position.add(this.velocity);
+			if (this.velocity.magnitude() > this.maxSpeed * Math.pow(this.speedMod, 2)) {
+				this.velocity = this.velocity.normalised().times(this.maxSpeed * Math.pow(this.speedMod, 2));
 			}
 		}
-		
-		this.friction();
-		this.position = this.position.add(this.velocity);
-		if (this.velocity.magnitude() > this.maxSpeed * Math.pow(this.speedMod, 2)) {
-			this.velocity = this.velocity.normalised().times(this.maxSpeed * Math.pow(this.speedMod, 2));
-		}
-    //console.log("testing, 123");
 	}
 
 	friction() {

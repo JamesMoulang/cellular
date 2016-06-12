@@ -1,7 +1,8 @@
 class Destroyable {
-	constructor() {
+	constructor(zIndex = 0) {
 		this.alive = true;
 		this.tag = 'default';
+		this.zIndex = zIndex;
 	}
 
 	destroy() {

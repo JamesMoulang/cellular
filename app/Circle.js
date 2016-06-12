@@ -2,8 +2,8 @@ import Vector from './Vector';
 import Destroyable from './Destroyable';
 
 class Circle extends Destroyable {
-	constructor(game, position = new Vector(0, 0), radius = 32, colour = '#ffffff') {
-		super();
+	constructor(game, position = new Vector(0, 0), radius = 32, colour = '#ffffff', zIndex = 0) {
+		super(zIndex);
 		this.game = game;
 		this.position = position;
 		this.radius = radius;

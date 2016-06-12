@@ -12,6 +12,7 @@ import PlayerListener from '../entities/PlayerListener';
 import BoostListener from '../entities/BoostListener';
 import Fairy from '../entities/Fairy';
 import Audio from '../Audio';
+import FairyNest from '../entities/FairyNest';
 
 class Main extends State {
 	constructor(game) {
@@ -53,19 +54,31 @@ class Main extends State {
 		metronomeDrum.loops = true;
 		this.game.tickers.sixteen.subscribe(metronomeDrum);
 
-		var player = this.game.world.add(new Player(this.game));
-		var boost = new BoostListener(this.game, player);
-
 		var call = this.game.world.add(
 			new Fairy(
 				this.game,
 				new Vector(0, -256),
 				'Gs3',
 				'Fs4',
-				notesGenerator(lnote), 
-				notesGenerator(rnote)
+				notesGenerator(lnote),
+				notesGenerator(rnote),
+				1
 			)
 		);
+
+		this.game.world.add(
+			new FairyNest(
+				this.game,
+				new Vector(0, 0),
+				['#5BC0EB', '#FDE74C', '#9BC53D', '#E55934', '#FA7921'],
+				[call],
+				0
+			)
+		);
+
+		var player = this.game.world.add(new Player(this.game));
+		var boost = new BoostListener(this.game, player);
+
 		call.player = player;
 		this.game.tickers.sixteen.subscribe(call);
 		call.activate();

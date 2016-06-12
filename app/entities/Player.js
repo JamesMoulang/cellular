@@ -8,7 +8,7 @@ import Note from './Note';
 
 class Player extends Circle {
 	constructor(game, position) {
-		super(game, position);
+		super(game, position, null, null, 3);
 		this.tag = 'player';
 		this.rotation = 0;
 		this.counter = 0;
@@ -63,7 +63,8 @@ class Player extends Circle {
 				this.position, 
 				this.radius, 
 				this.colour, 
-				this.velocity.times(0.5)
+				this.velocity.times(0.5),
+				this.zIndex
 			));
 
 			this.counter = 0;

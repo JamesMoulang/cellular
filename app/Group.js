@@ -1,7 +1,9 @@
 var _ = require('underscore');
+import Destroyable from './Destroyable';
 
-class Group {
+class Group extends Destroyable {
 	constructor(game, canvas, consistentStyle, fillStyle, strokeStyle, alpha) {
+		super();
 		this.tag = null;
 
 		this.canvas = canvas;
@@ -20,7 +22,14 @@ class Group {
 	add(entity) {
 		entity.group = this;
 		this.entities.push(entity);
+		this.depthSort();
 		return entity;
+	}
+
+	depthSort() {
+		this.entities = _.sortBy(this.entities, (entity) => {
+			return entity.zIndex;
+		});
 	}
 
 	getEntitiesWithTagName(tag) {
@@ -43,6 +52,13 @@ class Group {
 		for (var i = this.entities.length - 1; i >= 0; i--) {
 			this.entities[i].update();
 		}
+	}
+
+	destroy() {
+		super.destroy();
+		_.each(this.entities, (entity) => {
+			entity.destroy();
+		});
 	}
 
 	render() {
