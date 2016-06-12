@@ -11,7 +11,6 @@ class Drum extends BeatThing {
 		this.tag = 'Drum';
 		this.key = key;
 		this.sound = Audio.create(key);
-		console.log(this.sound);
 		this.on = true;
 	}
 

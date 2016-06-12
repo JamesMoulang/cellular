@@ -15,6 +15,7 @@ class BeatThing extends Destroyable {
 		this.setTicks(this.notes);
 		this.ticker = 0;
 		this.playing = true;
+		this.muted = false;
 	}
 
 	setNotes(notes) {
@@ -34,6 +35,10 @@ class BeatThing extends Destroyable {
 		}
 	}
 
+	mute(m) {
+		this.muted = m;
+	}
+
 	pause() {
 		this.playing = false;
 	}
@@ -51,11 +56,11 @@ class BeatThing extends Destroyable {
 			var shouldplay = true;
 			if (this.ticker == -1) {
 				this.ticker = 0;
-				this.onLoop();
+				this._onLoop();
 				shouldplay = false;
 			}
 
-			if (shouldplay || this.loops) {
+			if (!this.muted && (shouldplay || this.loops)) {
 				if (this.ticks[this.ticker]) {
 					this.play();
 				}
@@ -64,17 +69,25 @@ class BeatThing extends Destroyable {
 			this.ticker++;
 			if (this.ticker == this.ticks.length) {
 				this.ticker = -1;
-				this.onFinish();
+				this._onFinish();
 			}
 		}
+	}
+
+	_onFinish() {
+		this.onFinish();
 	}
 
 	onFinish() {
 
 	}
 
+	_onLoop() {
+		this.onLoop();
+	}
+
 	onLoop() {
-		
+
 	}
 
 	playCallback() {

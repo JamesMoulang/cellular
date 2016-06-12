@@ -28,6 +28,10 @@ class PlayerListener extends BeatThing {
 		
 	}
 
+	_onFinish() {
+		super._onFinish();
+	}
+
 	play() {
 		super.play();
 		this.lastBeatTimeStamp = this.game.timestamp();

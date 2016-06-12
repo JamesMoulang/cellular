@@ -22,25 +22,62 @@ class Fairy extends CallResponse {
 		this.tickCount = 0;
 		this.isAwake = true;
     	this.colour = '#C492B1';
+    	this.nest = null;
 		this.player = this.game.world.getEntitiesWithTagName('player')[0];
+		this.completed = false;
+
+		this.drumPair.leftdrum.playCallback = function() {
+			this.radius = 16;
+			this.velocity.x -= this.game.tickers.sixteen.onbeat ? this.maxSpeed : -this.maxSpeed;
+		}.bind(this);
+
+		this.drumPair.rightdrum.playCallback = function() {
+			this.radius = 16;
+			this.velocity.y += this.game.tickers.sixteen.onbeat ? this.maxSpeed : -this.maxSpeed;
+		}.bind(this);
 		//console.log("should be printing");
 		console.log(this.player);
 	}
 
 	sleep() {
+		this.mute(true);
+		this.active = false;
 		this.isAwake = false;
 	}
 
-	wake() {
+	onComplete() {
+		super.onComplete();
+		this.completed = true;
+		this.alpha = 0.25;
+		console.log(this.getVolume());
+		this.setVolume(this.getVolume() * 0.25);
+		this.setColour();
+		this.setLoops(true);
+		this.nest.onFairyComplete();
+	}
 
+	wake() {
+		this.mute(false);
+		console.log(this);
+		this.active = true;
+		this.isAwake = true;
+	}
+
+	getVolume() {
+		return this.drumPair.leftdrum.sound._volume;
+	}
+
+	setVolume(volume) {
+		this.setLeftVolume(volume);
+		this.setRightVolume(volume);
 	}
 
 	setLeftVolume(volume) {
-		this.drumPair.leftdrum.volume(volume);
+		this.drumPair.leftdrum.sound.volume(volume);
 	}
 
 	setRightVolume(volume) {
-		this.drumPair.rightDrum.volume(volume);
+		this.drumPair.rightdrum.sound.volume(volume);
 	}
 
 	update() {
@@ -63,7 +100,7 @@ class Fairy extends CallResponse {
 		this.velocity.y = Maths.towardsValue(this.velocity.y, Math.abs(toZero.y) * this.frictionMag, 0);
 	}
 
-	follow(){
+	follow() {
 		var fvec = new Vector(this.position.x, this.position.y);
 		var pvec = new Vector(this.player.position.x, this.player.position.y);
 		var vec = pvec.minus(fvec); // vector from fairy to player
@@ -97,7 +134,11 @@ class Fairy extends CallResponse {
 		}
 	}
 
-
+	render() {
+		if (this.isAwake) {
+			super.render(this.game.canvas, this.game.ctx);
+		}
+	}
 }
 
 export default Fairy;

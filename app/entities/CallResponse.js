@@ -36,12 +36,31 @@ class CallResponse extends Circle {
 				rNotes
 			)
 		);
+
+		this.colours = {
+    		listening: '#ff00ff',
+    		playing: '#ffff00',
+    		completed: '#00ffff'
+    	};
+    	this.setColour();
+    	this.correctCount = 0;
+    	this.correctsNeeded = this.listenPair.correctsNeeded();
 		this.listenPair.setFinishCallback(this.onListenFinished.bind(this));
 		this.listenPair.pause();
 		this.listenPair.rewind();
 		this.listenPair.onCorrect = function() {
 			this.radius = 128;
+			this.correctCount++;
 		}.bind(this);
+		this.incorrectCount = 0;
+		this.listenPair.onIncorrect = function() {
+			this.revolt();
+			this.incorrectCount++;
+		}.bind(this);
+	}
+
+	revolt() {
+
 	}
 
 	tick() {
@@ -51,26 +70,85 @@ class CallResponse extends Circle {
 		}
 	}
 
+	setColours(listening, playing, completed) {
+		this.colours.listening = listening;
+		this.colours.playing = playing;
+		this.colours.completed = completed;
+
+		this.setColour();
+	}
+
+	setColour() {
+		console.log("set colour", this.completed, this.playing, this.listening);
+
+		if (this.completed) {
+			this.colour = this.colours.completed;
+		} else if (this.playing) {
+			this.colour = this.colours.playing;
+		} else if (this.listening) {
+			this.colour = this.colours.listening;
+		}
+	}
+
+	onComplete() {
+
+	}
+
 	onListenFinished() {
-		// console.log('onListenFinished');
-		this.colour = '#ff00ff';
+		console.log(this.correctCount, this.correctsNeeded, this.incorrectCount);
+
+		if (this.correctCount == this.correctsNeeded && this.incorrectCount == 0) {
+			this.onComplete();
+		}
+
 		this.playing = true;
 		this.listening = false;
+		this.setColour();
 
 		this.listenPair.pause();
 		this.drumPair.rewind();
 		this.drumPair.start();
 	}
 
-	onCallFinished() {
-		// console.log("onCallFinished");
-		this.colour = '#ffff00';
-		this.playing = false;
-		this.listening = true;
+	mute(m) {
+		this.drumPair.mute(m);
+		this.listenPair.mute(m);
+	}
 
+	pause() {
 		this.drumPair.pause();
-		this.listenPair.rewind();
+		this.listenPair.pause();
+	}
+
+	play() {
+		this.drumPair.start();
 		this.listenPair.start();
+	}
+
+	rewind() {
+		this.drumPair.rewind();
+		this.listenPair.rewind();
+	}
+
+	setLoops(loop) {
+		this.drumPair.setLoops(loop);
+	}
+
+	onCallFinished() {
+		console.log("onCallFinished");
+
+		this.correctCount = 0;
+		this.incorrectCount = 0;
+
+		if (!this.completed) {
+			this.playing = false;
+			this.listening = true;
+			this.setColour();
+
+			this.drumPair.pause();
+			this.listenPair.rewind();
+			this.listenPair.start();
+		}
 	}
 
 	activate() {

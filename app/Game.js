@@ -52,8 +52,8 @@ class Game {
 		this.tickTime = this.idealFrameTime * 0.25;
 		this.tickers = {};
 		this.barTime = 2000;
-		this.tickers.twelve = new Ticker(this, this.barTime, 12);
-		this.tickers.sixteen = new Ticker(this, this.barTime, 16);
+		this.tickers.twelve = new Ticker(this, this.barTime, 12, 3);
+		this.tickers.sixteen = new Ticker(this, this.barTime, 16, 4);
 
 		this.pListeners = [];
 		this.qListeners = [];

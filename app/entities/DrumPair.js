@@ -23,6 +23,11 @@ class DrumPair extends Destroyable {
 		this.rightdrum = new Drum(this.game, rightkey, position, rightnotes, play);
 	}
 
+	setLoops(loop) {
+		this.leftdrum.loops = loop;
+		this.rightdrum.loops = loop;
+	}
+
 	setLoopCallback(func) {
 		this.leftdrum.onLoop = func;
 	}
@@ -30,6 +35,11 @@ class DrumPair extends Destroyable {
 	tick() {
 		this.leftdrum.tick();
 		this.rightdrum.tick();
+	}
+
+	mute(m) {
+		this.leftdrum.mute(m);
+		this.rightdrum.mute(m);
 	}
 
 	pause() {

@@ -20,6 +20,7 @@ class Trail extends Circle {
 		this.position = this.position.add(this.velocity).add(this.wiggle.times(this.game.delta));
 		this.radius -= this.game.delta * this.shrinkSpeed;
 		if (this.radius < 0) {
+			this.radius = 0;
 			this.destroy();
 		}
 	}

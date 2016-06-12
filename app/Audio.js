@@ -1,6 +1,5 @@
 var howler = require('howler');
 var Howl = howler.Howl;
-console.log(Howl);
 var _ = require('underscore');
 
 var Audio = {

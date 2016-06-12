@@ -13,6 +13,8 @@ import BoostListener from '../entities/BoostListener';
 import Fairy from '../entities/Fairy';
 import Audio from '../Audio';
 import FairyNest from '../entities/FairyNest';
+import _ from 'underscore';
+import level from './level';
 
 class Main extends State {
 	constructor(game) {
@@ -23,25 +25,6 @@ class Main extends State {
 	create() {
 		//var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2, -2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 4, 2, 2, 4, 2, 2, 4, 4, 8]);
 		var metronome = notesGenerator([4, 4, 4, 4]);
-
-		var lnote = [2, -2, -2, 2,2, -2, -2, 2, -16];
-		var rnote = [-2, 2, -2, -2,-2, 2, -2, -2, -16];
-
-		// lnote = [2, -2, 2, -2, 2, -2, 2, -2];
-		// rnote = [-2, 2, -2, 2, -2, 2, -2, 2];
-
-		var ddrum = this.game.world.add(
-			new DrumPair(
-					this.game,
-					'Gs3',
-					'Fs4',
-					new Vector(0, 0),
-					notesGenerator(lnote),
-					notesGenerator(rnote)
-				)
-		);
-		// this.game.tickers.sixteen.subscribe(ddrum);
-
 		var metronomeDrum = this.game.world.add(
 			new Drum(
 				this.game,
@@ -54,34 +37,41 @@ class Main extends State {
 		metronomeDrum.loops = true;
 		this.game.tickers.sixteen.subscribe(metronomeDrum);
 
-		var call = this.game.world.add(
-			new Fairy(
-				this.game,
-				new Vector(0, -256),
-				'Gs3',
-				'Fs4',
-				notesGenerator(lnote),
-				notesGenerator(rnote),
-				1
-			)
-		);
-
-		this.game.world.add(
-			new FairyNest(
-				this.game,
-				new Vector(0, 0),
-				['#5BC0EB', '#FDE74C', '#9BC53D', '#E55934', '#FA7921'],
-				[call],
-				0
-			)
-		);
-
 		var player = this.game.world.add(new Player(this.game));
 		var boost = new BoostListener(this.game, player);
 
-		call.player = player;
-		this.game.tickers.sixteen.subscribe(call);
-		call.activate();
+		_.each(level.nests, (nest) => {
+			var fairies = nest.fairies;
+			var nestFairies = [];
+
+			_.each(fairies, (fairy) => {
+				var f = this.game.world.add(new Fairy(
+					this.game,
+					new Vector().random().times(384),
+					nest.lKey,
+					nest.rKey,
+					notesGenerator(nest.lNotes),
+					notesGenerator(nest.rNotes),
+					1
+				));
+
+				nestFairies.push(f);
+			});
+
+			var _nest = this.game.world.add(new FairyNest(
+				this.game,
+				nest.pos,
+				nest.colours,
+				nestFairies,
+				0
+			));
+
+			_.each(nestFairies, (fairy) => {
+				fairy.player = player;
+				this.game.tickers.sixteen.subscribe(fairy);
+				fairy.activate();
+			});
+		});
 	}
 
 	enter() {

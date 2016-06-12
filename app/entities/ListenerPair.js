@@ -1,4 +1,5 @@
 import PlayerListener from './PlayerListener';
+import _ from 'underscore';
 import Audio from '../Audio';
 import Destroyable from '../Destroyable';
 
@@ -8,8 +9,6 @@ class ListenerPair extends Destroyable {
 		this.game = game;
 		this.lNotes = lNotes;
 		this.rNotes = rNotes;
-
-		console.log(lNotes, rNotes);
 
 		this.pListener = new PlayerListener(
 			this.game,
@@ -22,7 +21,8 @@ class ListenerPair extends Destroyable {
 		this.pListener.onCorrect = this.onCorrectP.bind(this);
 		this.pListener.onIncorrect = function() {
 			// console.log("p wrong");
-		}
+			this.onIncorrectP();
+		}.bind(this);
 		this.game.pListeners.push(this.pListener);
 
 		this.qListener = new PlayerListener(
@@ -36,8 +36,20 @@ class ListenerPair extends Destroyable {
 		this.qListener.onCorrect = this.onCorrectQ.bind(this);
 		this.qListener.onIncorrect = function() {
 			// console.log("q wrong");
-		}
+			this.onIncorrectQ();
+		}.bind(this);
 		this.game.qListeners.push(this.qListener);
+	}
+
+	correctsNeeded() {
+		var lSum = _.reduce(this.lNotes, function(memo, note){ 
+			return memo + (note.rest ? 0 : 1); 
+		}, 0);
+		var rSum = _.reduce(this.rNotes, function(memo, note){ 
+			return memo + (note.rest ? 0 : 1); 
+		}, 0);
+		console.log(lSum, rSum);
+		return lSum + rSum;
 	}
 
 	setLoopCallback(func) {
@@ -46,6 +58,11 @@ class ListenerPair extends Destroyable {
 
 	setFinishCallback(func) {
 		this.qListener.onFinish = func;
+	}
+
+	mute(m) {
+		this.qListener.mute(m);
+		this.pListener.mute(m);
 	}
 
 	pause() {
@@ -80,6 +97,20 @@ class ListenerPair extends Destroyable {
 	onCorrectP() {
 		console.log("correct p");
 		this.onCorrect();
+	}
+
+	onIncorrectP() {
+		console.log("incorrect p");
+		this.onIncorrect();
+	}
+
+	onIncorrectQ() {
+		console.log("incorrect q");
+		this.onIncorrect();
+	}
+
+	onIncorrect() {
+
 	}
 
 	update() {
