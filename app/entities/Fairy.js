@@ -24,7 +24,6 @@ class Fairy extends CallResponse {
     	this.colour = '#C492B1';
     	this.nest = null;
 		this.player = this.game.world.getEntitiesWithTagName('player')[0];
-		this.completed = false;
 
 		this.drumPair.leftdrum.playCallback = function() {
 			this.radius = 16;
@@ -61,6 +60,8 @@ class Fairy extends CallResponse {
 		console.log(this);
 		this.active = true;
 		this.isAwake = true;
+		this.playing = true;
+		this.position = this.nest.position.add(new Vector().random().times(384));
 	}
 
 	getVolume() {

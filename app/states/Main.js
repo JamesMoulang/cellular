@@ -50,8 +50,8 @@ class Main extends State {
 					new Vector().random().times(384),
 					nest.lKey,
 					nest.rKey,
-					notesGenerator(nest.lNotes),
-					notesGenerator(nest.rNotes),
+					notesGenerator(fairy.lNotes),
+					notesGenerator(fairy.rNotes),
 					1
 				));
 
@@ -72,6 +72,8 @@ class Main extends State {
 				fairy.activate();
 			});
 		});
+
+		console.log(this.game);
 	}
 
 	enter() {

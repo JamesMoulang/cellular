@@ -16,6 +16,7 @@ class CallResponse extends Circle {
 		this.playing = true;
 		this.listening = false;
 		this.active = false;
+		this.completed = false;
 
 		this.drumPair = this.game.world.add(
 			new DrumPair(
