@@ -4,6 +4,7 @@ import _ from 'underscore';
 class FairyNest extends Circle {
 	constructor(game, position, colours, fairies, zIndex) {
 		super(game, position, 768*0.4, colours[0], zIndex);
+		this.tag = 'nest';
 		this.colours = colours;
 		this.fairies = fairies;
 		this.fairyIndex = 0;

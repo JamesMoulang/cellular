@@ -21,7 +21,7 @@ class ListenerPair extends Destroyable {
 		// };
 		this.pListener.onCorrect = this.onCorrectP.bind(this);
 		this.pListener.onIncorrect = function() {
-			console.log("p wrong");
+			// console.log("p wrong");
 		}
 		this.game.pListeners.push(this.pListener);
 
@@ -35,7 +35,7 @@ class ListenerPair extends Destroyable {
 		// };
 		this.qListener.onCorrect = this.onCorrectQ.bind(this);
 		this.qListener.onIncorrect = function() {
-			console.log("q wrong");
+			// console.log("q wrong");
 		}
 		this.game.qListeners.push(this.qListener);
 	}

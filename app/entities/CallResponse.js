@@ -20,8 +20,8 @@ class CallResponse extends Circle {
 		this.drumPair = this.game.world.add(
 			new DrumPair(
 					this.game, 
-					'Gs3', 
-					'Fs4', 
+					lKey, 
+					rKey, 
 					new Vector(0, 0), 
 					lNotes, 
 					rNotes

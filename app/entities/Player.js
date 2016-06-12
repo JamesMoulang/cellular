@@ -5,6 +5,7 @@ import Maths from '../Maths';
 import Grenade from './Grenade';
 import Drum from './Drum';
 import Note from './Note';
+import _ from 'underscore';
 
 class Player extends Circle {
 	constructor(game, position) {
@@ -56,6 +57,15 @@ class Player extends Circle {
 			this.trailRate = 1.5;
 		}
 		this.position = this.position.add(this.velocity);
+
+		if (this.game.input.space.clicked) {
+			var nests = this.game.world.getEntitiesWithTagName('nest');
+			var sorted = _.sortBy(nests, (nest) => {
+				return nest.position.distance(this.position);
+			});
+
+			console.log(sorted[0]);
+		}
 
 		if (this.counter > this.trailRate) {
 			this.game.world.add(new Trail(
