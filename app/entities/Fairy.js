@@ -12,6 +12,7 @@ class Fairy extends CallResponse {
 		super(game, position, lKey, rKey, lNotes, rNotes);
 		this.tag = 'fairy';
 		this.rotation = 0;
+		this.following = false;
 		this.velocity = new Vector(0, 0);
 		this.maxSpeed = 22;
 		this.frictionMag = 5;
@@ -29,7 +30,20 @@ class Fairy extends CallResponse {
 
 	update() {
 		super.update();
-		this.hide();
+		if(this.following){
+			this.follow();
+		}
+		else{
+			//Calculate if it should be following
+			var fvec = new Vector(this.position.x, this.position.y);
+			var pvec = new Vector(this.player.position.x, this.player.position.y);
+			var vec = pvec.minus(fvec); // vector from fairy to player
+			var distance = Math.abs(vec.magnitude());
+			if(distance < 768){
+				this.following = true;
+			}
+		}
+		
 		this.friction();
 		this.position = this.position.add(this.velocity);
 		if (this.velocity.magnitude() > this.maxSpeed * Math.pow(this.speedMod, 2)) {
@@ -44,7 +58,7 @@ class Fairy extends CallResponse {
 		this.velocity.y = Maths.towardsValue(this.velocity.y, Math.abs(toZero.y) * this.frictionMag, 0);
 	}
 
-	hide(){
+	follow(){
 		var fvec = new Vector(this.position.x, this.position.y);
 		var pvec = new Vector(this.player.position.x, this.player.position.y);
 		var vec = pvec.minus(fvec); // vector from fairy to player
