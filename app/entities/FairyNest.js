@@ -1,5 +1,7 @@
 import Circle from '../Circle';
 import _ from 'underscore';
+import Vector from '../Vector';
+import Trail from './Trail';
 
 class FairyNest extends Circle {
 	constructor(game, position, colours, fairies, zIndex) {
@@ -12,6 +14,8 @@ class FairyNest extends Circle {
 			fairy.sleep();
 		});
 		this.fairies[this.fairyIndex].wake();
+		this.counter = 0;
+		this.trailRate = 25;
 	}
 
 	onFairyComplete() {
@@ -25,7 +29,20 @@ class FairyNest extends Circle {
 	}
 
 	update() {
+		this.counter += this.game.delta;
 
+		if (this.counter > this.trailRate) {
+			var trail = this.game.world.add(new Trail(
+				this.game,
+				this.position, 
+				this.radius * 0.5, 
+				this.colour, 
+				new Vector().random().times(40),
+				this.zIndex
+			));
+
+			trail.shrinkSpeed = 0.5;
+		}
 	}
 }
 

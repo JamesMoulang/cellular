@@ -20,6 +20,7 @@ class Player extends Circle {
 		this.useCache = false;
 		this.speedMod = 1;
 		this.tickCount = 0;
+		this.attachedTo = null;
 	}
 
 	directControl() {
@@ -60,18 +61,26 @@ class Player extends Circle {
 
 		if (this.game.input.space.clicked) {
 			var nests = this.game.world.getEntitiesWithTagName('nest');
-			var sorted = _.sortBy(nests, (nest) => {
-				return nest.position.distance(this.position);
-			});
+			
+			if (nests.length > 0) {
+				var sorted = _.sortBy(nests, (nest) => {
+					return nest.position.distance(this.position);
+				});
 
-			console.log(sorted[0]);
+				var nest = sorted[0];
+				if (nest.position.distance(this.position) < 768 * 0.5) {
+					this.attachTo(nest);
+				}
+			}
 		}
+
+
 
 		if (this.counter > this.trailRate) {
 			this.game.world.add(new Trail(
 				this.game, 
 				this.position, 
-				this.radius, 
+				this.radius,
 				this.colour, 
 				this.velocity.times(0.5),
 				this.zIndex
@@ -82,6 +91,10 @@ class Player extends Circle {
 		
 		//TODO: camera dead zone.
 		this.game.camera.followPlayer(this.position);
+	}
+
+	attachTo(nest) {
+		this.attachedTo = nest;
 	}
 
 	fire() {

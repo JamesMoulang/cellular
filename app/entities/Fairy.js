@@ -35,6 +35,14 @@ class Fairy extends CallResponse {
 
 	}
 
+	setLeftVolume(volume) {
+		this.drumPair.leftdrum.volume(volume);
+	}
+
+	setRightVolume(volume) {
+		this.drumPair.rightDrum.volume(volume);
+	}
+
 	update() {
 		super.update();
 

@@ -4,6 +4,13 @@ class Vector {
 		this.y = y;
 	}
 
+	random() {
+		return new Vector(
+			Math.random() - 0.5,
+			Math.random() - 0.5
+		).normalised();
+	}
+
 	angleTo(v2) {
 		return Math.atan2(v2.y - this.y, v2.x - this.x);
 	}
