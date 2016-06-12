@@ -1,0 +1,29 @@
+	  var blank = [-32];
+
+		var lnote2 = [3,3,3,3,3,-5,-12];
+		var rnote2 = [2,-2,2,-2,2,-2,2,-2, -16];
+
+		var lnote3 = [2,2,-2,2,2,2,-2,2,2,-14]
+
+		var call2 = this.game.world.add(
+			new Fairy(
+				this.game,
+				new Vector(0, -200),
+				'Cs4',
+				'Ds4',
+				notesGenerator(lnote2),
+				notesGenerator(rnote2)
+			)
+		);
+
+		var tomFairy =new Fairy(
+			this.game,
+			new Vector(0, -200),
+			'tom1',
+			'tom1',
+			notesGenerator(lnote3),
+			notesGenerator(blank)
+		);
+		tomFairy.setLeftVolume(0.1);
+		tomFairy.setRightVolume(0.1);
+		var call3 = this.game.world.add(tomFairy);
