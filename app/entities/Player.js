@@ -5,10 +5,11 @@ import Maths from '../Maths';
 import Grenade from './Grenade';
 import Drum from './Drum';
 import Note from './Note';
+import _ from 'underscore';
 
 class Player extends Circle {
 	constructor(game, position) {
-		super(game, position);
+		super(game, position, null, null, 3);
 		this.tag = 'player';
 		this.rotation = 0;
 		this.counter = 0;
@@ -19,6 +20,7 @@ class Player extends Circle {
 		this.useCache = false;
 		this.speedMod = 1;
 		this.tickCount = 0;
+		this.attachedTo = null;
 	}
 
 	directControl() {
@@ -57,13 +59,31 @@ class Player extends Circle {
 		}
 		this.position = this.position.add(this.velocity);
 
+		if (this.game.input.space.clicked) {
+			var nests = this.game.world.getEntitiesWithTagName('nest');
+			
+			if (nests.length > 0) {
+				var sorted = _.sortBy(nests, (nest) => {
+					return nest.position.distance(this.position);
+				});
+
+				var nest = sorted[0];
+				if (nest.position.distance(this.position) < 768 * 0.5) {
+					this.attachTo(nest);
+				}
+			}
+		}
+
+
+
 		if (this.counter > this.trailRate) {
 			this.game.world.add(new Trail(
 				this.game, 
 				this.position, 
-				this.radius, 
+				this.radius,
 				this.colour, 
-				this.velocity.times(0.5)
+				this.velocity.times(0.5),
+				this.zIndex
 			));
 
 			this.counter = 0;
@@ -71,6 +91,10 @@ class Player extends Circle {
 		
 		//TODO: camera dead zone.
 		this.game.camera.followPlayer(this.position);
+	}
+
+	attachTo(nest) {
+		this.attachedTo = nest;
 	}
 
 	fire() {

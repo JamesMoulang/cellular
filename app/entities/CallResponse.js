@@ -9,8 +9,8 @@ import ListenerPair from './ListenerPair';
 import Maths from '../Maths';
 
 class CallResponse extends Circle {
-	constructor(game, position, lKey, rKey, lNotes, rNotes) {
-		super(game, position, 64, '#ff00ff');
+	constructor(game, position, lKey, rKey, lNotes, rNotes, zIndex) {
+		super(game, position, 64, '#ff00ff', zIndex);
 
 		this.following = false;
 		this.playing = true;
@@ -20,8 +20,8 @@ class CallResponse extends Circle {
 		this.drumPair = this.game.world.add(
 			new DrumPair(
 					this.game, 
-					'Gs3', 
-					'Fs4', 
+					lKey, 
+					rKey, 
 					new Vector(0, 0), 
 					lNotes, 
 					rNotes

@@ -12,6 +12,7 @@ import PlayerListener from '../entities/PlayerListener';
 import BoostListener from '../entities/BoostListener';
 import Fairy from '../entities/Fairy';
 import Audio from '../Audio';
+import FairyNest from '../entities/FairyNest';
 
 class Main extends State {
 	constructor(game) {
@@ -22,6 +23,25 @@ class Main extends State {
 	create() {
 		//var notes = notesGenerator([2, 2, 4, 8, 16, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, -2, 2, 2, 2, -2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 4, 2, 2, 4, 2, 2, 4, 4, 8]);
 		var metronome = notesGenerator([4, 4, 4, 4]);
+
+		var lnote = [2, -2, -2, 2,2, -2, -2, 2, -16];
+		var rnote = [-2, 2, -2, -2,-2, 2, -2, -2, -16];
+
+		// lnote = [2, -2, 2, -2, 2, -2, 2, -2];
+		// rnote = [-2, 2, -2, 2, -2, 2, -2, 2];
+
+		var ddrum = this.game.world.add(
+			new DrumPair(
+					this.game,
+					'Gs3',
+					'Fs4',
+					new Vector(0, 0),
+					notesGenerator(lnote),
+					notesGenerator(rnote)
+				)
+		);
+		// this.game.tickers.sixteen.subscribe(ddrum);
+
 		var metronomeDrum = this.game.world.add(
 			new Drum(
 				this.game,
@@ -34,38 +54,6 @@ class Main extends State {
 		metronomeDrum.loops = true;
 		this.game.tickers.sixteen.subscribe(metronomeDrum);
 
-		var player = this.game.world.add(new Player(this.game));
-		var boost = new BoostListener(this.game, player);
-		var blank = [-32];
-		var lnote = [2, -2, -2, 2,2, -2, -2, 2, -16];
-		var rnote = [-2, 2, -2, -2,-2, 2, -2, -2, -16];
-
-		var lnote2 = [3,3,3,3,3,-5,-12];
-		var rnote2 = [2,-2,2,-2,2,-2,2,-2, -16];
-
-		var lnote3 = [2,2,-2,2,2,2,-2,2,2,-14]
-
-		var call2 = this.game.world.add(
-			new Fairy(
-				this.game,
-				new Vector(0, -200),
-				'Cs4',
-				'Ds4',
-				notesGenerator(lnote2),
-				notesGenerator(rnote2)
-			)
-		);
-		var tomFairy =new Fairy(
-			this.game,
-			new Vector(0, -200),
-			'tom1',
-			'tom1',
-			notesGenerator(lnote3),
-			notesGenerator(blank)
-		);
-		tomFairy.setLeftVolume(0.1);
-		tomFairy.setRightVolume(0.1);
-		var call3 = this.game.world.add(tomFairy);
 		var call = this.game.world.add(
 			new Fairy(
 				this.game,
@@ -73,20 +61,27 @@ class Main extends State {
 				'Gs3',
 				'Fs4',
 				notesGenerator(lnote),
-				notesGenerator(rnote)
+				notesGenerator(rnote),
+				1
 			)
 		);
 
+		this.game.world.add(
+			new FairyNest(
+				this.game,
+				new Vector(0, 0),
+				['#5BC0EB', '#FDE74C', '#9BC53D', '#E55934', '#FA7921'],
+				[call],
+				0
+			)
+		);
 
+		var player = this.game.world.add(new Player(this.game));
+		var boost = new BoostListener(this.game, player);
 
-		//call.player = player;
-		//call2.player = player;
+		call.player = player;
 		this.game.tickers.sixteen.subscribe(call);
-		this.game.tickers.sixteen.subscribe(call2);
-		this.game.tickers.sixteen.subscribe(call3);
 		call.activate();
-		call2.activate();
-		call3.activate();
 	}
 
 	enter() {
