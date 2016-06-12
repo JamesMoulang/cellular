@@ -13,7 +13,7 @@ class Circle extends Destroyable {
 	}
 
 	update() {
-
+		
 	}
 
 	render(canvas, ctx) {

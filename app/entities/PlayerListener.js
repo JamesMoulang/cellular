@@ -11,6 +11,13 @@ class PlayerListener extends BeatThing {
 			active: false,
 			timestamp: 0
 		};
+		this.lastBeatHit = true;
+		this.lastBeatValid = false;
+	}
+
+	_onCorrect() {
+		this.lastBeatHit = true;
+		this.onCorrect();
 	}
 
 	onCorrect() {
@@ -18,13 +25,27 @@ class PlayerListener extends BeatThing {
 	}
 
 	onIncorrect() {
-		console.log("BAD!");
+		
 	}
 
 	play() {
 		super.play();
 		this.lastBeatTimeStamp = this.game.timestamp();
+		this.lastBeatValid = true;
 		this.checkPreviousInputs();
+	}
+
+	tick() {
+		if (!this.lastBeatHit && this.lastBeatValid && this.playing) {
+			this.onIncorrect();
+		}
+
+		if (this.lastBeatHit && !this.lastBeatValid && this.playing) {
+			this.onIncorrect();
+		}
+		this.lastBeatValid = false;
+		this.lastBeatHit = false;
+		super.tick();
 	}
 
 	checkPreviousInputs() {
@@ -32,7 +53,7 @@ class PlayerListener extends BeatThing {
 			if (this.lastBeatTimeStamp > this.playerDrum.timestamp) {
 				if (this.lastBeatTimeStamp - this.playerDrum.timestamp < this.allowableTime) {
 					this.slow = true;
-					this.onCorrect();
+					this._onCorrect();
 				}
 			}
 
@@ -53,7 +74,7 @@ class PlayerListener extends BeatThing {
 		if (timestamp > this.lastBeatTimeStamp && !this.fast) {
 			if (timestamp - this.lastBeatTimeStamp <= this.allowableTime) {
 				this.fast = true;
-				this.onCorrect();
+				this._onCorrect();
 			} else {
 				this.playerDrum.active = true;
 				this.playerDrum.timestamp = timestamp;

@@ -1,4 +1,5 @@
-var _ = require('underscore');
+import _ from 'underscore';
+import Audio from './Audio';
 
 class Ticker {
 	constructor(game, barTime, beats) {
@@ -16,7 +17,6 @@ class Ticker {
 		// console.log(this.elapsedTime, this.barTime);
 		if (this.elapsedTime >= this.beatTime) {
 			this.elapsedTime -= this.beatTime;
-
 			_.each(this.subscribers, (subscriber) => {
 				subscriber.tick();
 			});
