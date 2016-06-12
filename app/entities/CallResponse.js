@@ -79,8 +79,6 @@ class CallResponse extends Circle {
 
 	update() {
 		this.radius = Maths.lerp(this.radius, 0.25, 64);
-		this.position.x = this.player.position.x;
-		this.position.y = this.player.position.y - 128;
 	}
 }
 

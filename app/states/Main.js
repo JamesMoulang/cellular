@@ -10,7 +10,7 @@ import Group from '../Group';
 import Note from '../entities/Note';
 import PlayerListener from '../entities/PlayerListener';
 import BoostListener from '../entities/BoostListener';
-import CallResponse from '../entities/CallResponse';
+import Fairy from '../entities/Fairy';
 import Audio from '../Audio';
 
 class Main extends State {
@@ -57,9 +57,9 @@ class Main extends State {
 		var boost = new BoostListener(this.game, player);
 
 		var call = this.game.world.add(
-			new CallResponse(
+			new Fairy(
 				this.game,
-				new Vector(0, 0),
+				new Vector(0, -256),
 				'Gs3',
 				'Fs4',
 				notesGenerator(lnote), 

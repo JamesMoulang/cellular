@@ -1,4 +1,4 @@
-import Circle from '../Circle';
+import CallResponse from './CallResponse';
 import Trail from './Trail';
 import Vector from '../Vector';
 import Maths from '../Maths';
@@ -7,9 +7,9 @@ import Drum from './Drum';
 import Note from './Note';
 // potential colours: #BCE7FD, C492B1, AF3B6E, 424651, 21FA90
 // from https://coolors.co/app/bce7fd-c492b1-af3b6e-424651-21fa90
-class Fairy extends Circle {
-	constructor(game, position) {
-		super(game, position);
+class Fairy extends CallResponse {
+	constructor(game, position, lKey, rKey, lNotes, rNotes) {
+		super(game, position, lKey, rKey, lNotes, rNotes);
 		this.tag = 'fairy';
 		this.rotation = 0;
 		this.velocity = new Vector(0, 0);
@@ -28,6 +28,7 @@ class Fairy extends Circle {
 
 
 	update() {
+		super.update();
 		this.hide();
 		this.friction();
 		this.position = this.position.add(this.velocity);
