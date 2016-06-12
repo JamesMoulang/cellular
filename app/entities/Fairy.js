@@ -10,6 +10,7 @@ import Note from './Note';
 class Fairy extends CallResponse {
 	constructor(game, position, lKey, rKey, lNotes, rNotes, zIndex) {
 		super(game, position, lKey, rKey, lNotes, rNotes, zIndex);
+		this.startPos = position;
 		this.tag = 'fairy';
 		this.rotation = 0;
 		this.following = false;
@@ -21,6 +22,7 @@ class Fairy extends CallResponse {
 		this.speedMod = 1;
 		this.tickCount = 0;
 		this.isAwake = true;
+		this.hidden = true;
     	this.colour = '#C492B1';
     	this.nest = null;
 		this.player = this.game.world.getEntitiesWithTagName('player')[0];
@@ -47,7 +49,7 @@ class Fairy extends CallResponse {
 	onComplete() {
 		super.onComplete();
 		this.completed = true;
-		this.alpha = 0.25;
+		this.alpha = 0.5;
 		console.log(this.getVolume());
 		this.setVolume(this.getVolume() * 0.25);
 		this.setColour();
@@ -56,12 +58,17 @@ class Fairy extends CallResponse {
 	}
 
 	wake() {
+		this.hidden = false;
+		this.radius = 0;
 		this.mute(false);
 		console.log(this);
 		this.active = true;
 		this.isAwake = true;
 		this.playing = true;
-		this.position = this.nest.position.add(new Vector().random().times(384));
+
+		console.log(this.nest.position, this.startPos);
+		this.position = this.player.position.add(this.startPos);
+		console.log(this.position);
 	}
 
 	getVolume() {
@@ -92,6 +99,8 @@ class Fairy extends CallResponse {
 			if (this.velocity.magnitude() > this.maxSpeed * Math.pow(this.speedMod, 2)) {
 				this.velocity = this.velocity.normalised().times(this.maxSpeed * Math.pow(this.speedMod, 2));
 			}
+		} else {
+			this.radius = Maths.lerp(this.radius, 0.25, 0);
 		}
 	}
 
@@ -136,7 +145,7 @@ class Fairy extends CallResponse {
 	}
 
 	render() {
-		if (this.isAwake) {
+		if (!this.hidden) {
 			super.render(this.game.canvas, this.game.ctx);
 		}
 	}

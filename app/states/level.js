@@ -4,7 +4,7 @@ var level = {
 	nests: [
 		{
 			pos: new Vector(1024, 0),
-			colours: ['#5BC0EB', '#FDE74C', '#9BC53D', '#E55934', '#FA7921'],
+			colours: ['#424651', '#C492B1', '#AF3B6E', '#21FA90', '#BCE7FD'],
 			lKey: 'Gs3',
 			rKey: 'Fs4',
 			fairies: [

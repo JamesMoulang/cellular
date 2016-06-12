@@ -63,10 +63,14 @@ class FairyNest extends Circle {
 		_.each(this.fairies, function(fairy) {
 			fairy.sleep();
 			fairy.position = fairy.position.add(move);
+			fairy.hidden = true;
 		}.bind(this));
 	}
 
 	update() {
+		// console.log(this.fairies[this.fairyIndex].position.minus(this.fairies[this.fairyIndex].player.position));
+
+
 		if (this.fillingScreen) {
 			if (!this.filledScreen) {
 				this.radiusVelocity += 8 * this.game.delta;
