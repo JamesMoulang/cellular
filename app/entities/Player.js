@@ -68,13 +68,26 @@ class Player extends Circle {
 				});
 
 				var nest = sorted[0];
-				if (nest.position.distance(this.position) < 768 * 0.5) {
+				if (nest.position.distance(this.position) < nest.radius * 0.5) {
 					this.attachTo(nest);
 				}
 			}
 		}
 
+		if (this.attachedTo != null) {
+			var toAttach = this.attachedTo.position.minus(this.position);
+			var mag = toAttach.magnitude();
+			var factor = Maths.clamp(Math.pow((mag/(this.attachedTo.radius * 0.5)), 2), 0.05, 1);
+			this.velocity = this.velocity.add(toAttach.normalised().times(this.maxSpeed * 0.125 * this.game.delta * factor));
 
+			if (this.velocity.magnitude() < this.maxSpeed * 0.1) {
+				this.game.camera.lerp(this.attachedTo.position, 0.1);
+			} else {
+				this.game.camera.followPlayer(this.position);
+			}
+		} else {
+			this.game.camera.followPlayer(this.position);
+		}
 
 		if (this.counter > this.trailRate) {
 			this.game.world.add(new Trail(
@@ -90,11 +103,16 @@ class Player extends Circle {
 		}
 		
 		//TODO: camera dead zone.
-		this.game.camera.followPlayer(this.position);
 	}
 
 	attachTo(nest) {
 		this.attachedTo = nest;
+		this.maxSpeed = 40;
+	}
+
+	unattach() {
+		this.attachedTo = null;
+		this.maxSpeed = 25;
 	}
 
 	fire() {
