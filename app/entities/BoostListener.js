@@ -21,6 +21,7 @@ class BoostListener {
 		}.bind(this);
 		this.game.pListeners.push(pListener);
 		this.game.tickers.sixteen.subscribe(pListener);
+		pListener.loops = true;
 
 		var qListener = new PlayerListener(
 			this.game, 
@@ -35,6 +36,7 @@ class BoostListener {
 			player.velocity.y += qListener.onbeat ? -player.maxSpeed : player.maxSpeed;
 			player.radius = 48;
 		}.bind(this);
+		qListener.loops = true;
 		this.game.qListeners.push(qListener);
 		this.game.tickers.sixteen.subscribe(qListener);
 	}
