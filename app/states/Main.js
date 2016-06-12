@@ -32,11 +32,11 @@ class Main extends State {
 
 		var ddrum = this.game.world.add(
 			new DrumPair(
-					this.game, 
-					'Gs3', 
-					'Fs4', 
-					new Vector(0, 0), 
-					notesGenerator(lnote), 
+					this.game,
+					'Gs3',
+					'Fs4',
+					new Vector(0, 0),
+					notesGenerator(lnote),
 					notesGenerator(rnote)
 				)
 		);
