@@ -4,9 +4,10 @@ import Vector from '../Vector';
 import Trail from './Trail';
 import Maths from '../Maths';
 import Audio from '../Audio';
+import KeySprite from './KeySprite';
 
 class FairyNest extends Circle {
-	constructor(game, position, colours, fairies, zIndex) {
+	constructor(game, position, colours, fairies, zIndex, lKey, rKey) {
 		super(game, position, 768*0.4, colours[0], zIndex);
 		this.tag = 'nest';
 		this.colours = colours;
@@ -29,6 +30,12 @@ class FairyNest extends Circle {
 		this.returning = false;
 		this.readyToStart = false;
 		this.beatCounter = 0;
+		this.shouldGivePlayerVoice = false;
+		this.lKey = lKey;
+		this.rKey = rKey;
+
+		this.spaceHint = null;
+		this.spaceTimeout = null;
 
 		for (var i = 0; i < 10; i++) {
 			var trail = this.game.world.add(new Trail(
@@ -51,9 +58,10 @@ class FairyNest extends Circle {
 		console.log(this.fairyIndex);
 		if (this.fairyIndex >= this.fairies.length) {
 			console.log("boom");
-		} else {
-			this.readyToStart = true;
+			this.shouldGivePlayerVoice = true;
 		}
+
+		this.readyToStart = true;
 	}
 
 	tick() {
@@ -63,12 +71,35 @@ class FairyNest extends Circle {
 			this.beatCounter = 1;
 			// Audio.play('B4');
 			this.startIfWaiting();
+			if (this.spaceHint != null) {
+				this.spaceHint.press();
+			}
 		}
 	}
 
 	startIfWaiting() {
 		if (this.readyToStart) {
 			// Audio.play('B4');
+
+			if (this.shouldGivePlayerVoice) {
+				this.player.canSpeak();
+
+				if (!this.game.shownSpaceHint) {
+					this.spaceTimeout = setTimeout(function() {
+						this.spaceHint = this.game.world.add(new KeySprite(
+							this.game,
+							new Vector(0, 128),
+							'space',
+							4
+						));
+						this.spaceHint.automatic = false;
+					}.bind(this), 10000);
+					this.game.shownSpaceHint = true;
+				}
+				this.shouldGivePlayerVoice = false;
+			} else {
+				this.player.muteMe();
+			}
 
 			for (var i = 0; i < this.fairies.length; i++) {
 				if (i <= this.fairyIndex) {
@@ -88,15 +119,26 @@ class FairyNest extends Circle {
 		this.fillingScreen = true;
 		this.radiusVelocity = -32;
 
+		this.player = this.game.world.getEntitiesWithTagName('player')[0];
+		this.player.giveSounds(this.lKey, this.rKey);
+		if (this.shouldGivePlayerVoice) {
+			this.player.canSpeak();
+		} else {
+			this.player.muteMe();
+		}
 		this.readyToStart = true;
+		this.zIndex++;
+		this.game.world.depthSort();
 	}
 
 	onUnattached(move) {
+		this.zIndex--;
+		this.game.world.depthSort();
 		console.log("uh");
+		this.readyToStart = false;
 		this.radius = this.targetRadius;
 		this.filledScreen = false;
 		this.fillingScreen = false;
-		this.game.backgroundColour = '#ffffff';
 		this.returning = true;
 
 		_.each(this.fairies, function(fairy) {
@@ -104,12 +146,17 @@ class FairyNest extends Circle {
 			fairy.position = fairy.position.add(move);
 			fairy.hidden = true;
 		}.bind(this));
+
+		if (this.spaceTimeout != null) {
+			clearTimeout(this.spaceTimeout);
+		}
+
+		if (this.spaceHint != null) {
+			this.spaceHint.destroy();
+		}
 	}
 
 	update() {
-		// console.log(this.fairies[this.fairyIndex].position.minus(this.fairies[this.fairyIndex].player.position));
-
-
 		if (this.fillingScreen) {
 			if (!this.filledScreen) {
 				this.radiusVelocity += 8 * this.game.delta;

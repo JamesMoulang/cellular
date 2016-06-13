@@ -30,15 +30,13 @@ class Fairy extends CallResponse {
     	this.showHint = null;
     	this.hint = null;
     	this.hintShown = false;
-		this.player = this.game.world.getEntitiesWithTagName('player')[0];
-
+		
 		this.drumPair.leftdrum.playCallback = function() {
 			this.radius = 16;
 			this.velocity.x -= this.game.tickers.sixteen.onbeat ? this.maxSpeed : -this.maxSpeed;
 		}.bind(this);
 
 		this.listenPair.pListener.checkPreviousCallback = function() {
-			console.log('oh');
 			if (this.hint != null) {
 				this.hint.press();
 			}
@@ -49,13 +47,31 @@ class Fairy extends CallResponse {
 			}
 		}.bind(this);
 
+		// this.listenPair.pListener.debug = true;
+		// this.listenPair.qListener.debug = true;
+
 		this.drumPair.rightdrum.playCallback = function() {
 			this.radius = 16;
 			this.velocity.y += this.game.tickers.sixteen.onbeat ? this.maxSpeed : -this.maxSpeed;
-			if (this.hint != null) {
-				this.hint.press();
-			}
 		}.bind(this);
+	}
+
+	happy() {
+		super.happy();
+		// console.log("yiss");
+		for (var i = 0; i < 10; i++) {
+			var trail = this.game.world.add(new Trail(
+				this.game,
+				this.position, 
+				this.radius, 
+				this.colour, 
+				new Vector().random().times(15),
+				this.zIndex
+			));
+			trail.friction = 0.5;
+			trail.shrinkSpeed = 3;
+		}
+		this.radius = 128;
 	}
 
 	sleep() {

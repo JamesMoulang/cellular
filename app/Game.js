@@ -48,7 +48,7 @@ class Game {
 		this.timeScaleFPS = 30;
 		this.idealFrameTime = 1000 / this.timeScaleFPS;
 		this.delta = 0;
-		
+		this.shownSpaceHint = false;
 		this.tickTime = this.idealFrameTime * 0.25;
 		this.tickers = {};
 		this.barTime = 2000;

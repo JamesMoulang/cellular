@@ -12,6 +12,9 @@ class CallResponse extends Circle {
 	constructor(game, position, lKey, rKey, lNotes, rNotes, zIndex) {
 		super(game, position, 64, '#ff00ff', zIndex);
 
+		this.player = this.game.world.getEntitiesWithTagName('player')[0];
+		console.log(this.player);
+
 		this.following = false;
 		this.playing = true;
 		this.listening = false;
@@ -50,7 +53,7 @@ class CallResponse extends Circle {
 		this.listenPair.pause();
 		this.listenPair.rewind();
 		this.listenPair.onCorrect = function() {
-			this.radius = 128;
+			this.happy();
 			this.correctCount++;
 		}.bind(this);
 		this.incorrectCount = 0;
@@ -58,6 +61,10 @@ class CallResponse extends Circle {
 			this.revolt();
 			this.incorrectCount++;
 		}.bind(this);
+	}
+
+	happy() {
+
 	}
 
 	revolt() {
@@ -107,6 +114,7 @@ class CallResponse extends Circle {
 		this.listenPair.pause();
 		this.drumPair.rewind();
 		this.drumPair.start();
+		// this.player.muteMe();
 	}
 
 	mute(m) {
@@ -146,6 +154,8 @@ class CallResponse extends Circle {
 			this.listenPair.rewind();
 			this.listenPair.start();
 		}
+
+		// this.player.canSpeak();
 	}
 
 	activate() {

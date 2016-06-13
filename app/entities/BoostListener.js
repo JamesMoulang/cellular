@@ -18,6 +18,7 @@ class BoostListener {
 		pListener.onCorrect = function() {
 			player.velocity.x += pListener.onbeat ? player.maxSpeed : -player.maxSpeed;
 			player.radius = 48;
+			player.onBoost(true);
 		}.bind(this);
 		this.game.pListeners.push(pListener);
 		this.game.tickers.sixteen.subscribe(pListener);
@@ -35,6 +36,7 @@ class BoostListener {
 		qListener.onCorrect = function() {
 			player.velocity.y += qListener.onbeat ? -player.maxSpeed : player.maxSpeed;
 			player.radius = 48;
+			player.onBoost(false);
 		}.bind(this);
 		qListener.loops = true;
 		this.game.qListeners.push(qListener);

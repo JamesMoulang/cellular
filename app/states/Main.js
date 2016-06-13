@@ -55,7 +55,9 @@ class Main extends State {
 				nest.pos,
 				nest.colours,
 				nestFairies,
-				0
+				-1,
+				nest.lKey,
+				nest.rKey
 			));
 			this.game.tickers.sixteen.subscribe(_nest);
 

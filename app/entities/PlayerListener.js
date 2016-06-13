@@ -13,6 +13,7 @@ class PlayerListener extends BeatThing {
 		};
 		this.lastBeatHit = true;
 		this.lastBeatValid = false;
+		this.debug = false;
 	}
 
 	_onCorrect() {
@@ -57,10 +58,17 @@ class PlayerListener extends BeatThing {
 	}
 
 	checkPreviousInputs() {
+		if (this.debug) {
+			console.log("check previous");
+		}
+
 		if (this.playerDrum.active && !this.fast) {
 			if (this.lastBeatTimeStamp > this.playerDrum.timestamp) {
 				if (this.lastBeatTimeStamp - this.playerDrum.timestamp < this.allowableTime) {
 					this.slow = true;
+					if (this.debug) {
+						console.log('got slow');
+					}
 					this._onCorrect();
 				}
 			}
@@ -79,38 +87,23 @@ class PlayerListener extends BeatThing {
 
 		//If the player was too slow, they might just be going for the next beat.
 		//So, we need to wait before we can say it was incorrect.
+
+		if (this.debug) {
+			console.log('trigger');
+		}
 		
 		if (timestamp > this.lastBeatTimeStamp && !this.fast) {
 			if (timestamp - this.lastBeatTimeStamp <= this.allowableTime) {
+				if (this.debug) {
+						console.log('got fast');
+					}
+
 				this.fast = true;
 				this._onCorrect();
 			} else {
 				this.playerDrum.active = true;
 				this.playerDrum.timestamp = timestamp;
 			}
-		}
-	}
-
-	checkBeats(clear) {
-		var timestamp = this.lastBeatTimeStamp;
-		var timeslot = this.allowableTime;
-		var playerDrum = this.playerDrum;
-
-		if (playerDrum.active) {
-			if (Math.abs(timestamp - playerDrum.timestamp) <= timeslot) {
-				this.onCorrect();
-				this.playerDrum.active = false;
-			} else {
-				this.onIncorrect();
-			}
-		} else {
-			if (this.lastBeatTimeStamp - playerDrum.timestamp > timestamp) {
-				this.onIncorrect();
-			}
-		}
-
-		if (clear) {
-			this.playerDrum.active = false;
 		}
 	}
 }

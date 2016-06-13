@@ -6,6 +6,7 @@ import Grenade from './Grenade';
 import Drum from './Drum';
 import Note from './Note';
 import _ from 'underscore';
+import Audio from '../Audio';
 
 class Player extends Circle {
 	constructor(game, position) {
@@ -22,6 +23,9 @@ class Player extends Circle {
 		this.tickCount = 0;
 		this.attachedTo = null;
 		this.trails = [];
+		this.canPlaySounds = false;
+		this.lSound = null;
+		this.rSound = null;
 	}
 
 	directControl() {
@@ -40,6 +44,30 @@ class Player extends Circle {
 
 		if (this.game.input.q.clicked) {
 			this.game.triggerBeat(false);
+		}
+	}
+
+	giveSounds(lKey, rKey) {
+		this.lSound = Audio.create(lKey);
+		this.rSound = Audio.create(rKey);
+		this.canPlaySounds = true;
+	}
+
+	canSpeak() {
+		this.canPlaySounds = true;
+	}
+
+	muteMe() {
+		this.canPlaySounds = false;
+	}
+
+	onBoost(left) {
+		if (this.canPlaySounds) {
+			if (left) {
+				this.lSound.play();
+			} else {
+				this.rSound.play();
+			}
 		}
 	}
 
