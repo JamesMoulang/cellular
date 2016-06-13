@@ -46,7 +46,7 @@ class BeatThing extends Destroyable {
 		var t = (this.game.tickers.sixteen.onBeatCount - this.game.tickers.sixteen.beatCounter);
 		console.log(t);
 
-		this.waitTime = t - 1;
+		this.waitTime = t + 3;
 	}
 
 	mute(m) {

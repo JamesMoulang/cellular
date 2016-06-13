@@ -62,6 +62,8 @@ class Fairy extends CallResponse {
 		this.mute(true);
 		this.active = false;
 		this.isAwake = false;
+		this.drumPair.pause();
+		this.drumPair.rewind();
 		this.listenPair.rewind();
 		this.listenPair.pause();
 		this.setColour();
