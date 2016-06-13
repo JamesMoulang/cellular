@@ -72,16 +72,16 @@ class CallResponse extends Circle {
 	}
 
 	setColours(listening, playing, completed) {
-		this.colours.listening = listening;
-		this.colours.playing = playing;
-		this.colours.completed = completed;
+		if (!this.completed) {
+			this.colours.listening = listening;
+			this.colours.playing = playing;
+			this.colours.completed = completed;
 
-		this.setColour();
+			this.setColour();
+		}
 	}
 
 	setColour() {
-		console.log("set colour", this.completed, this.playing, this.listening);
-
 		if (this.completed) {
 			this.colour = this.colours.completed;
 		} else if (this.playing) {
@@ -96,8 +96,6 @@ class CallResponse extends Circle {
 	}
 
 	onListenFinished() {
-		console.log(this.correctCount, this.correctsNeeded, this.incorrectCount);
-
 		if (this.correctCount == this.correctsNeeded && this.incorrectCount == 0) {
 			this.onComplete();
 		}
@@ -121,7 +119,7 @@ class CallResponse extends Circle {
 		this.listenPair.pause();
 	}
 
-	play() {
+	start() {
 		this.drumPair.start();
 		this.listenPair.start();
 	}
@@ -136,8 +134,6 @@ class CallResponse extends Circle {
 	}
 
 	onCallFinished() {
-		console.log("onCallFinished");
-
 		this.correctCount = 0;
 		this.incorrectCount = 0;
 

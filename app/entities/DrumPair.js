@@ -5,6 +5,7 @@ import _ from 'underscore';
 class DrumPair extends Destroyable {
 	constructor(game, leftkey, rightkey, position, leftnotes, rightnotes, play) {
 		super();
+		this.game = game;
 		this.position = position;
 
 		var lSum = _.reduce(leftnotes, function(memo, note){ return memo + Math.abs(note.length); }, 0);
@@ -30,6 +31,11 @@ class DrumPair extends Destroyable {
 
 	setLoopCallback(func) {
 		this.leftdrum.onLoop = func;
+	}
+
+	wait() {
+		this.leftdrum.wait();
+		this.rightdrum.wait();
 	}
 
 	tick() {

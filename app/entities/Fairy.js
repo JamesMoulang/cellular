@@ -5,11 +5,13 @@ import Maths from '../Maths';
 import Grenade from './Grenade';
 import Drum from './Drum';
 import Note from './Note';
+import KeySprite from './KeySprite';
 // potential colours: #BCE7FD, C492B1, AF3B6E, 424651, 21FA90
 // from https://coolors.co/app/bce7fd-c492b1-af3b6e-424651-21fa90
 class Fairy extends CallResponse {
 	constructor(game, position, lKey, rKey, lNotes, rNotes, zIndex) {
 		super(game, position, lKey, rKey, lNotes, rNotes, zIndex);
+
 		this.startPos = position;
 		this.tag = 'fairy';
 		this.rotation = 0;
@@ -25,6 +27,9 @@ class Fairy extends CallResponse {
 		this.hidden = true;
     	this.colour = '#C492B1';
     	this.nest = null;
+    	this.showHint = null;
+    	this.hint = null;
+    	this.hintShown = false;
 		this.player = this.game.world.getEntitiesWithTagName('player')[0];
 
 		this.drumPair.leftdrum.playCallback = function() {
@@ -32,18 +37,34 @@ class Fairy extends CallResponse {
 			this.velocity.x -= this.game.tickers.sixteen.onbeat ? this.maxSpeed : -this.maxSpeed;
 		}.bind(this);
 
+		this.listenPair.pListener.checkPreviousCallback = function() {
+			console.log('oh');
+			if (this.hint != null) {
+				this.hint.press();
+			}
+		}.bind(this);
+		this.listenPair.qListener.checkPreviousCallback = function() {
+			if (this.hint != null) {
+				this.hint.press();
+			}
+		}.bind(this);
+
 		this.drumPair.rightdrum.playCallback = function() {
 			this.radius = 16;
 			this.velocity.y += this.game.tickers.sixteen.onbeat ? this.maxSpeed : -this.maxSpeed;
+			if (this.hint != null) {
+				this.hint.press();
+			}
 		}.bind(this);
-		//console.log("should be printing");
-		console.log(this.player);
 	}
 
 	sleep() {
 		this.mute(true);
 		this.active = false;
 		this.isAwake = false;
+		this.listenPair.rewind();
+		this.listenPair.pause();
+		this.setColour();
 	}
 
 	onComplete() {
@@ -58,6 +79,8 @@ class Fairy extends CallResponse {
 	}
 
 	wake() {
+		this.drumPair.wait();
+		this.drumPair.start();
 		this.hidden = false;
 		this.radius = 0;
 		this.mute(false);
@@ -65,6 +88,26 @@ class Fairy extends CallResponse {
 		this.active = true;
 		this.isAwake = true;
 		this.playing = true;
+		this.listening = false;
+
+		this.setColour();
+
+		if (this.showHint != null && !this.hintShown) {
+			var pos = new Vector(0, 128);
+			if (this.showHint == 'p') {
+				pos = new Vector(384, -384);
+			} else if (this.showHint == 'q') {
+				pos = new Vector(-384, -384);
+			}
+			this.hintShown = true;
+			this.hint = this.game.world.add(new KeySprite(
+				this.game,
+				pos,
+				this.showHint,
+				4
+			));
+			this.hint.automatic = false;
+		}
 
 		console.log(this.nest.position, this.startPos);
 		this.position = this.player.position.add(this.startPos);

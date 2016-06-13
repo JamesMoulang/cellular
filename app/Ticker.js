@@ -13,7 +13,13 @@ class Ticker {
 		this.onbeat = false;
 		this.beatCounter = 0;
 		this.onBeatCount = onBeatCount;
-		this.beatCallback = null;
+		console.log("obc", onBeatCount);
+	}
+
+	sync() {
+		_.each(this.subscribers, (subscriber) => {
+			subscriber.ticker = 0;
+		});
 	}
 
 	update(lastFrameTimeElapsed) {
@@ -22,15 +28,11 @@ class Ticker {
 		if (this.elapsedTime >= this.beatTime) {
 			this.elapsedTime -= this.beatTime;
 
-			this.beatCounter++;
 			if (this.beatCounter == this.onBeatCount) {
+				// Audio.play('B4');
 				this.beatCounter = 0;
-				this.onbeat = !this.onbeat;
-				if (this.onbeat && this.beatCallback != null) {
-					this.beatCallback();
-					this.beatCallback = null;
-				}
 			}
+			this.beatCounter++;
 
 			_.each(this.subscribers, (subscriber) => {
 				subscriber.tick();

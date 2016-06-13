@@ -1,6 +1,6 @@
-var howler = require('howler');
-var Howl = howler.Howl;
-var _ = require('underscore');
+import howler from 'howler';
+const Howl = howler.Howl;
+import _ from 'underscore';
 
 var Audio = {
 	cache: {},

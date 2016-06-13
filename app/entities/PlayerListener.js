@@ -52,6 +52,10 @@ class PlayerListener extends BeatThing {
 		super.tick();
 	}
 
+	checkPreviousCallback() {
+
+	}
+
 	checkPreviousInputs() {
 		if (this.playerDrum.active && !this.fast) {
 			if (this.lastBeatTimeStamp > this.playerDrum.timestamp) {
@@ -65,6 +69,7 @@ class PlayerListener extends BeatThing {
 		}
 		this.fast = false;
 		this.playerDrum.active = false;
+		this.checkPreviousCallback();
 	}
 
 	triggerBeat(timestamp) {

@@ -16,6 +16,8 @@ class BeatThing extends Destroyable {
 		this.ticker = 0;
 		this.playing = true;
 		this.muted = false;
+		this.waiting = false;
+		this.waitTime = 0;
 	}
 
 	setNotes(notes) {
@@ -35,6 +37,18 @@ class BeatThing extends Destroyable {
 		}
 	}
 
+	wait() {
+		this.waiting = true;
+		this.ticker = 0;
+
+		console.log(this.game.tickers.sixteen.beatCounter, this.game.tickers.sixteen.onBeatCount);
+
+		var t = (this.game.tickers.sixteen.onBeatCount - this.game.tickers.sixteen.beatCounter);
+		console.log(t);
+
+		this.waitTime = t - 1;
+	}
+
 	mute(m) {
 		this.muted = m;
 	}
@@ -52,7 +66,14 @@ class BeatThing extends Destroyable {
 	}
 
 	tick() {
-		if (this.playing) {
+		if (this.waiting) {
+			this.waitTime--;
+			if (this.waitTime <= 0) {
+				this.waiting = false;
+			}
+		}
+
+		if (this.playing && !this.waiting) {
 			var shouldplay = true;
 			if (this.ticker == -1) {
 				this.ticker = 0;

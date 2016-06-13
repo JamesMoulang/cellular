@@ -26,6 +26,22 @@ class FairyNest extends Circle {
 		this.startRadius = this.radius;
 		this.radiusVelocity = 0;
 		this.returning = false;
+		this.readyToStart = false;
+
+		for (var i = 0; i < 10; i++) {
+			var trail = this.game.world.add(new Trail(
+				this.game,
+				this.position, 
+				this.radius * 0.5, 
+				this.colour, 
+				new Vector().random().times(10),
+				this.zIndex - 2
+			));
+			trail.friction = 0;
+			trail.shrinkSpeed = 0.5;
+
+			trail.position = trail.position.add(trail.velocity.times(Math.random() * 100));
+		}
 	}
 
 	onFairyComplete() {
@@ -78,7 +94,6 @@ class FairyNest extends Circle {
 
 				if (this.radius > 0.99 * this.targetRadius) {
 					this.filledScreen = true;
-					this.game.backgroundColour = this.colour;
 				}
 			}
 		} else {
@@ -97,7 +112,7 @@ class FairyNest extends Circle {
 						this.radius * 0.5, 
 						this.colour, 
 						new Vector().random().times(10),
-						this.zIndex
+						this.zIndex - 1
 					));
 					trail.friction = 0;
 					trail.shrinkSpeed = 0.5;
@@ -111,6 +126,9 @@ class FairyNest extends Circle {
 	render() {
 		if (!this.filledScreen) {
 			super.render(this.game.canvas, this.game.ctx);
+		} else {
+			this.game.ctx.fillStyle = this.colour;
+			this.game.ctx.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
 		}
 	}
 }

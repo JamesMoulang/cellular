@@ -48,7 +48,6 @@ class ListenerPair extends Destroyable {
 		var rSum = _.reduce(this.rNotes, function(memo, note){ 
 			return memo + (note.rest ? 0 : 1); 
 		}, 0);
-		console.log(lSum, rSum);
 		return lSum + rSum;
 	}
 
@@ -86,26 +85,26 @@ class ListenerPair extends Destroyable {
 	}
 
 	onCorrect() {
-		console.log("yeeeee boi");
+		// console.log("yeeeee boi");
 	}
 
 	onCorrectQ() {
-		console.log("correct q");
+		// console.log("correct q");
 		this.onCorrect();
 	}
 
 	onCorrectP() {
-		console.log("correct p");
+		// console.log("correct p");
 		this.onCorrect();
 	}
 
 	onIncorrectP() {
-		console.log("incorrect p");
+		// console.log("incorrect p");
 		this.onIncorrect();
 	}
 
 	onIncorrectQ() {
-		console.log("incorrect q");
+		// console.log("incorrect q");
 		this.onIncorrect();
 	}
 

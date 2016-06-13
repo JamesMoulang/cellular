@@ -34,7 +34,7 @@ class Game {
 		this.ctx = ctx;
 		this.width = width;
 		this.height = height;
-		this.backgroundColour = '#ffffff';
+		this.backgroundColour = '#eee9e9';
 		
 		this.updatables = [];
 		this.camera = new Camera(this);
@@ -52,7 +52,7 @@ class Game {
 		this.tickTime = this.idealFrameTime * 0.25;
 		this.tickers = {};
 		this.barTime = 2000;
-		this.tickers.twelve = new Ticker(this, this.barTime, 12, 3);
+		// this.tickers.twelve = new Ticker(this, this.barTime, 12, 3);
 		this.tickers.sixteen = new Ticker(this, this.barTime, 16, 4);
 
 		this.pListeners = [];
