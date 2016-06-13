@@ -3,6 +3,7 @@ import _ from 'underscore';
 import Vector from '../Vector';
 import Trail from './Trail';
 import Maths from '../Maths';
+import Audio from '../Audio';
 
 class FairyNest extends Circle {
 	constructor(game, position, colours, fairies, zIndex) {
@@ -27,6 +28,7 @@ class FairyNest extends Circle {
 		this.radiusVelocity = 0;
 		this.returning = false;
 		this.readyToStart = false;
+		this.beatCounter = 0;
 
 		for (var i = 0; i < 10; i++) {
 			var trail = this.game.world.add(new Trail(
@@ -50,7 +52,32 @@ class FairyNest extends Circle {
 		if (this.fairyIndex >= this.fairies.length) {
 			console.log("boom");
 		} else {
-			this.fairies[this.fairyIndex].wake();
+			this.readyToStart = true;
+		}
+	}
+
+	tick() {
+		this.beatCounter++;
+
+		if (this.beatCounter > 16) {
+			this.beatCounter = 1;
+			Audio.play('B4');
+			this.startIfWaiting();
+		}
+	}
+
+	startIfWaiting() {
+		if (this.readyToStart) {
+			// Audio.play('B4');
+
+			for (var i = 0; i < this.fairies.length; i++) {
+				if (i <= this.fairyIndex) {
+					if (this.fairies[i].isAwake) {
+						this.fairies[i].wake();
+					}
+				}
+			}
+			this.readyToStart = false;
 		}
 	}
 
@@ -61,11 +88,7 @@ class FairyNest extends Circle {
 		this.fillingScreen = true;
 		this.radiusVelocity = -32;
 
-		for (var i = 0; i < this.fairies.length; i++) {
-			if (i <= this.fairyIndex) {
-				this.fairies[i].wake();
-			}
-		}
+		this.readyToStart = true;
 	}
 
 	onUnattached(move) {

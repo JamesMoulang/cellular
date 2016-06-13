@@ -81,7 +81,7 @@ class Fairy extends CallResponse {
 	}
 
 	wake() {
-		this.drumPair.wait();
+		// this.drumPair.wait();
 		this.drumPair.start();
 		this.hidden = false;
 		this.radius = 0;

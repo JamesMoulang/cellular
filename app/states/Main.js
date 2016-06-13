@@ -57,6 +57,7 @@ class Main extends State {
 				nestFairies,
 				0
 			));
+			this.game.tickers.sixteen.subscribe(_nest);
 
 			_.each(nestFairies, function(fairy) {
 				fairy.player = player;

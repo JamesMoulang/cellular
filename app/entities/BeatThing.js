@@ -18,6 +18,7 @@ class BeatThing extends Destroyable {
 		this.muted = false;
 		this.waiting = false;
 		this.waitTime = 0;
+		this.cheat = false;
 	}
 
 	setNotes(notes) {
@@ -59,6 +60,9 @@ class BeatThing extends Destroyable {
 
 	start() {
 		this.playing = true;
+		this.ticker = 0;
+
+		// this.tick();
 	}
 
 	rewind() {
@@ -76,9 +80,11 @@ class BeatThing extends Destroyable {
 		if (this.playing && !this.waiting) {
 			var shouldplay = true;
 			if (this.ticker == -1) {
-				this.ticker = 0;
-				this._onLoop();
-				shouldplay = false;
+				// if (!this.cheat) {
+					this.ticker = 0;
+					this._onLoop();
+					shouldplay = false;
+				// }
 			}
 
 			if (!this.muted && (shouldplay || this.loops)) {
