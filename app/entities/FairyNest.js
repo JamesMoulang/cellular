@@ -61,7 +61,7 @@ class FairyNest extends Circle {
 
 		if (this.beatCounter > 16) {
 			this.beatCounter = 1;
-			Audio.play('B4');
+			// Audio.play('B4');
 			this.startIfWaiting();
 		}
 	}
@@ -72,7 +72,7 @@ class FairyNest extends Circle {
 
 			for (var i = 0; i < this.fairies.length; i++) {
 				if (i <= this.fairyIndex) {
-					if (this.fairies[i].isAwake) {
+					if (!this.fairies[i].isAwake) {
 						this.fairies[i].wake();
 					}
 				}
