@@ -12,6 +12,10 @@ import Ticker from './Ticker';
 import PlayerListener from './entities/PlayerListener';
 import Note from './entities/Note';
 
+import CallbackManager from './CallbackManager';
+import RhythmWorkerGenerator from './RhythmWorkerGenerator';
+import Audio from './Audio';
+
 var _ = require('underscore');
 
 const codes = {
@@ -49,14 +53,68 @@ class Game {
 		this.idealFrameTime = 1000 / this.timeScaleFPS;
 		this.delta = 0;
 		this.shownSpaceHint = false;
-		this.tickTime = this.idealFrameTime * 0.25;
-		this.tickers = {};
 		this.barTime = 2000;
-		// this.tickers.twelve = new Ticker(this, this.barTime, 12, 3);
-		this.tickers.sixteen = new Ticker(this, this.barTime, 16, 4);
 
-		this.pListeners = [];
-		this.qListeners = [];
+		this.rhythmCallbacks = new CallbackManager();
+		this.rhythmCallbacks.add('flash', function() {
+			Audio.play('tick');
+		}.bind(this));
+
+		this.rhythmCallbacks.add('success', function() {
+			console.log("success");
+		}.bind(this));
+
+		this.rhythmCallbacks.add('failure', function() {
+			console.log("failure");
+		}.bind(this));
+
+		this.worker16 = RhythmWorkerGenerator(2000, 16);
+		// this.worker12 = RhythmWorkerGenerator(2000, 12);
+		this.worker16.onmessage = function(event) {
+			var type = event.data.type;
+			var data = event.data.data;
+
+			if (type == 'event') {
+				switch(data) {
+					case 'started':
+						console.log("STARTED!");
+						this.worker16.postMessage(
+							{
+								type: 'queue', 
+								data: {
+									beats: [0,1,2,4,5,7,9,10],
+									loop: true,
+									listen: true,
+									callback: {
+										success: 'success',
+										failure: 'failure'
+									}
+								}
+							}
+						);
+
+
+
+						//Steve Reich
+						// this.worker12.postMessage(
+						// 	{
+						// 		type: 'queue',
+						// 		data: {
+						// 			beats: [0,1,2,4,5,7,9,10],
+						// 			loop: true,
+						// 			callback: 'flash',
+						// 			listen: false
+						// 		}
+						// 	}
+						// );
+						break;
+					default:
+						break;
+				}
+			} else if (type == 'callback') {
+				this.rhythmCallbacks.trigger(data);
+			}
+		}.bind(this);
 
 		this.gravity = -0.098;
 		this.windDirection = new Vector(0.5, 0.5).normalised();
@@ -99,18 +157,13 @@ class Game {
 		this.state.switchState('preload');
 	}
 
-	triggerBeat(p) {
-		var timestamp = this.timestamp();
-		_.each(p ? this.pListeners : this.qListeners, function(listener) {
-			listener.triggerBeat(timestamp);
-		})
+	triggerBeat(k) {
+		console.log(k);
 	}
 
 	setBarTime(bt) {
 		this.barTime = bt;
-		_.each(this.tickers, (ticker) => {
-			ticker.barTime = bt;
-		});
+		console.warn("this does nothing");
 	}
 
 	createCanvas(id) {
@@ -224,12 +277,14 @@ class Game {
 			case codes.q:
 				if (!this.input.q.isDown) {
 					this.input.q.clicked = true;
+					this.worker16.postMessage({type: 'input', data: 'q'});
 				}
 				this.input.q.isDown = true;
 				break;
 			case codes.p:
 				if (!this.input.p.isDown) {
 					this.input.p.clicked = true;
+					this.worker16.postMessage({type: 'input', data: 'p'});
 				}
 				this.input.p.isDown = true;
 				break;
@@ -291,22 +346,12 @@ class Game {
 
 	loop() {
 		var lastFrameTimeElapsed = this.timestamp() - this.lastTimestamp;
-		this.frameTimeElapseCounter += lastFrameTimeElapsed;
-
-		_.each(this.tickers, (ticker) => {
-			ticker.update(lastFrameTimeElapsed);
-		});
-
-		if (this.frameTimeElapseCounter >= this.idealFrameTime) {
-			this.delta = this.frameTimeElapseCounter / this.idealFrameTime;
-			this.update();
-			this.render();
-			this.frameTimeElapseCounter = 0;
-		}
-
+		this.delta = lastFrameTimeElapsed / this.idealFrameTime;
+		this.update();
+		this.render();
 		this.lastTimestamp = this.timestamp();
-		if (lastFrameTimeElapsed < this.tickTime) {
-			setTimeout(this.loop.bind(this), this.tickTime - lastFrameTimeElapsed);
+		if (lastFrameTimeElapsed < this.idealFrameTime) {
+			setTimeout(this.loop.bind(this), this.idealFrameTime - lastFrameTimeElapsed);
 		} else {
 			this.loop();
 		}

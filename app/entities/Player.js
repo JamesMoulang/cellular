@@ -39,11 +39,11 @@ class Player extends Circle {
 
 	drumControl() {
 		if (this.game.input.p.clicked) {
-			this.game.triggerBeat(true);
+			this.game.triggerBeat('p');
 		}
 
 		if (this.game.input.q.clicked) {
-			this.game.triggerBeat(false);
+			this.game.triggerBeat('q');
 		}
 	}
 
